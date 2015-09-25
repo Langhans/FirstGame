@@ -1,5 +1,6 @@
 package firstGamePackage;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +27,7 @@ public class Star{
 
 	
 	public Graphics2D draw( Graphics2D g2){
-		
+		g2.setColor(Color.WHITE);
 		g2.fillOval( x , y, size_width, size_height);
 		return g2;
 	

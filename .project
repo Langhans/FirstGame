@@ -14,16 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/Pics/alienblaster.png</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/Downloads/alienblaster.png</locationURI>
-		</link>
-		<link>
-			<name>src/Pics/rocket.png</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/Downloads/rocket.png</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

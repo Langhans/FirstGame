@@ -34,7 +34,7 @@ public class Enemy implements ActionListener{
 	//Ships state		
 	boolean exploding = false;
 	
-	// Vapen  
+	// weapon 
 	 
 	
 	public static Timer exploTimer;

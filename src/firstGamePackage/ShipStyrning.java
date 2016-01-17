@@ -9,39 +9,40 @@ import java.awt.event.MouseMotionListener;
 
 public class ShipStyrning implements KeyListener, MouseListener, MouseMotionListener {
 
+  private final Ship ship;
+  
+  public ShipStyrning( Ship ship) {
+    this.ship = ship;
+  }
+  
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 		System.out.println(" KEY TYPED IN SHIPSTYRNING! YEESSSSS");
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 		System.out.println("KeyPressed Event mottagen av Shipstyrningsobjektet!");
-		
 		int key = e.getKeyCode();
 		
 		switch (key){
 		
 		case KeyEvent.VK_UP:
-			GameElements.ship.moveUp();
-			System.out.println("UP KEY!");
-		
+			ship.moveUp();
+			break;
 		case KeyEvent.VK_DOWN:
-			GameElements.ship.moveDown();
-		
+			ship.moveDown();
+			break;
 		case KeyEvent.VK_RIGHT:
-			GameElements.ship.moveFwd();
-			
+			ship.moveFwd();
+			break;
 		case KeyEvent.VK_LEFT:
-			GameElements.ship.moveBwd();
-			
+			ship.moveBwd();
+			break;
 		case KeyEvent.VK_R:
-			GameElements.ship.fireRocket();
-			
-	
+			ship.fireRocket();
+			break;
 		default:
 			System.out.println(" no move: KeyCode: " + key);
 		}
@@ -57,30 +58,12 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		GameElements.ship.fireRocket();
+		ship.fireRocket();
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		int x = e.getX();
-		int y = e.getY();
-		System.out.printf(" -- %d -- %d -- \n", x , y);
-		
-		for (Enemy enemy : GameElements.enemy_array){
-			if (x >= enemy.x && x < (enemy.x + enemy.enemy_width)
-					&& y >= enemy.y && (y <= enemy.y + enemy.enemy_height)){
-				
-				System.out.printf("Enemy %d at %d -- %d !\n", enemy.hashCode(), enemy.x , enemy.y );
-				
-				enemy.setExploding();
-				
-				
-			}
-		}
-		
-		
 		
 	}
 
@@ -110,9 +93,7 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		GameElements.ship.x = e.getX() - Ship.ship_width/2;
-		GameElements.ship.y = e.getY() - Ship.ship_height/2;
+		
 	}
 
 	

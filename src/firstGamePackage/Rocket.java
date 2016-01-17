@@ -8,96 +8,64 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-public class Rocket {
+public class Rocket extends AbstrGameObject {
 
-	//Rockets state
-		public int x=0;
-		public int y=0;
-	
-	
-		public boolean explodera = false;
-		//public boolean visible = false;
-		public boolean fired = false;
-	
-	public static int rocket_width=  15;
-	public static int rocket_height= 15;
-	
-	//File rocketImg_File;
-	InputStream rocketStream; 
-	Image rocketImg;
-	
-	
-	//Konstruktor! 
-	public Rocket(){
-	
-		//get Rocket från ressources
-	try {
-		rocketStream = GameElements.class.getResourceAsStream("/rocket.png");
-		rocketStream.toString();
-	}
-	catch (Exception e){
-		System.out.println("RocketSTream cannot be loaded! " + e.getStackTrace());
-	}
-		
-		//load image of ROcket
-	try{
-	rocketImg =  ImageIO.read( rocketStream);
-	}
-	catch(Exception e2){
-		System.out.println("CAnnot build rocket p! Errormesg.: "+e2.getMessage());
-		System.exit(0);
-		}
-	}// ENd of Konstruktor
-	
-	
-	
-	public Graphics2D drawRocket (Graphics2D g2){
-			g2.setColor(Color.WHITE);
-			g2.drawString(this.x + "-" + this.y, x, y);
-			g2.drawImage(rocketImg, this.x , this.y , Rocket.rocket_width, Rocket.rocket_height, null);
-			
-			return g2;
-		}
-	
-	
-	// måste göras innan rocket kan ritas, ger aktuell position
-	public void initRocket(){
-		//always aktuell position av rocket
-			this.x=GameElements.ship.getX() + Ship.ship_width;
-			this.y= GameElements.ship.getY() + Ship.ship_height/2 - Rocket.rocket_height/2;
-			
-	}
-	
-	
-	public void drawNextFrame(){
-			//GameElements.ship.rocket.fired=true;
-			if ( this.x <= GameElements.x_max ){
-				this.x = x + 15;
-				
-				
-				
-				
-				}
-			else{
-				try {
-					//finalize();
-					GameElements.ship.rocket.fired=false;
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-	}//end next frame Rocket
-	
-	
-	
-	public void setFired(){
-		if (GameElements.ship.rocket.fired || GameElements.ship.rocket_count<=0)
-			;
-		else 
-			this.fired=true;
-			//this.visible = true;
-	}
-	
-	
-}//End Class Rocket
+  // Rockets state
+  
+  private boolean exploding = false;
+  private boolean fired = false;
+
+  private Image rocket_image;
+
+  public Rocket() {
+    super.height = 15;
+    super.width = 15;
+    super.image = GraphicsTools.makeImage("/Pics/rocket.png");
+    rocket_image = super.image;
+  }
+
+  public Graphics2D draw(Graphics2D g2) {
+    g2.setColor(Color.WHITE);
+    g2.drawString(x + "-" + y, x, y);
+    g2.drawImage(rocket_image, this.x, this.y, width,
+        height, null);
+    return g2;
+  }
+  
+  public void initRocket( int x , int y) {
+    super.x = x ;
+    super.y = y - height / 2;
+  }
+
+  public void prepareNextFrame() {
+    if( fired ){
+      this.x = x + 10;
+    }
+    GraphicsTools.checkBounds(this);
+    
+  }// end next frame Rocket
+
+  public void setFired() {
+    this.fired = true;
+  }
+  
+  public boolean isFired(){
+    return fired;
+  }
+  
+  public int getX(){
+    return this.x;
+  }
+  
+  public int getY(){
+    return this.y;
+  }
+
+  public void explode() {
+    //TODO Rocket exploding()
+    System.out.println("ROCKET EXPLODES!");
+  }
+  
+  
+
+}// End Class Rocket

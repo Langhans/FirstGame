@@ -17,36 +17,31 @@ import javax.swing.Timer;
 
 public class Ship extends AbstrGameObject {
 
-  Timer exploTimer;
-  static int timerCounter;
-  static int timerI = 0;
-  InputStream shipStream;
   private Image image;
-
   protected boolean exploding = false;
-
- 
-
   static int x_start = 30;
   static int y_start;
+  
+  private int x_real;
+  private int y_real;
 
   private Image ship_image = null;
-
   // step / unit for one move via tangenterna!
-  static int step = 8;
-
+  static int step = 50;
   // Vapen
-  protected Rocket rocket;
+  protected Rocket rocket = null;
   protected int rocket_count;
   
   public Ship() {
     rocket_count = 10;
     rocket = new Rocket();
 
-    // Startposition for spaceship
-    super.x = x_start;
+//    // Startposition for spaceship
+    super.x = GamePanel.x_max / 2;
     y_start = GamePanel.y_max / 2;
     super.y = y_start;
+    x_real = super.x;
+    y_real = super.y;
     
     super.width = 75;
     super.height = 75;
@@ -58,15 +53,33 @@ public class Ship extends AbstrGameObject {
   // returns a Graphics2D Object to draw the Ship
   @Override
   public Graphics2D draw(Graphics2D g2) {
-    g2.drawImage(ship_image, x, y, width, height, null);
+
+    adjustRealXandY();
+    g2.drawImage(ship_image, x_real, y_real, width, height, null);
     return g2;
+  }
+  
+  public void adjustRealXandY(){
+    
+    if (x < x_real){
+      x_real -= 2;
+    } else if( x > x_real ){
+      x_real += 2;
+    }
+    
+    if (y < y_real){
+      y_real -= 2 ;
+    } else if (y > y_real){
+      y_real += 2;
+    }
   }
 
   @Override
   public void prepareNextFrame() {
 
     if (exploding) {
-     ship_image = null;
+      // ship_image = null;
+      System.out.println("SHIP HIT!");
     } else {
       ship_image = super.image;
     }
@@ -74,60 +87,60 @@ public class Ship extends AbstrGameObject {
 
   // return ships aktuella position
   public int getX() {
-    return this.x;
+    return x_real;
   }
 
   // return ships aktuella position
   public int getY() {
-    return this.y;
+    return y_real;
   }
 
   // return rocket- count
   public int getRocketCount() {
-    return this.rocket_count;
+    return rocket_count;
   }
 
   // MOVE SHIP
   public void moveUp() {
-    if (y <= step)
-      y = 0;
+    
+    if (super.y <= step)
+      super.y = 0;
     else
-      this.y = y - step;
+      super.y -= step;
   }
 
   public void moveDown() {
-    if (y <= GamePanel.y_max - step - height)
-      y = y + step;
+    if (super.y <= GamePanel.y_max - step - height)
+      super.y += step;
   }
 
   public void moveFwd() {
-    if (x <= GamePanel.x_max - width - step)
-      x = x + step;
+    if (super.x <= GamePanel.x_max - width - step)
+      super.x += step;
   }
 
   public void moveBwd() {
-    if (x >= step)
-      x = x - step;
+    if (super.x >= step)
+      super.x -= step;
   }
 
   public void fireRocket() {
-    // TODO Auto-generated method stub
-    if (this.rocket_count >= 1) {
-      
+    
+    if (this.rocket_count >= 1 && !rocket.isFired()) {
       this.rocket.initRocket(
-          getRocketStartX() ,
-          getRocketStartY() );
+          getWeaponStartX() ,
+          getWeaponStartY() );
       this.rocket_count -= 1;
       this.rocket.setFired();
-    }
+    } 
   }
   
-  private int getRocketStartX(){
-    return x + width;
+  private int getWeaponStartX(){
+    return x_real + width;
   }
   
-  private int getRocketStartY(){
-    return y + height / 2;
+  private int getWeaponStartY(){
+    return y_real + height / 2;
   }
 
   public void exploding(){
@@ -136,8 +149,21 @@ public class Ship extends AbstrGameObject {
   }
   
   
-  public void setExploding() {
+  @Override
+  public void explode() {
     this.exploding = true;
   }
 
+  public void fireLaser() {
+    GamePanel.laser_array.add(new Laser(
+        getWeaponStartX(), 
+        getWeaponStartY(), 
+        new Direction(45,0)));
+    
+    
+  }
+  
+  
+  
+  
 }// End Class Ship

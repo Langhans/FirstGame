@@ -39,10 +39,11 @@ public class Rocket extends AbstrGameObject {
 
   public void prepareNextFrame() {
     if( fired ){
-      this.x = x + 10;
+      x = x + 10;
+      if (x > GamePanel.x_max){
+        fired = false;
+      }
     }
-    GraphicsTools.checkBounds(this);
-    
   }// end next frame Rocket
 
   public void setFired() {
@@ -64,6 +65,7 @@ public class Rocket extends AbstrGameObject {
   public void explode() {
     //TODO Rocket exploding()
     System.out.println("ROCKET EXPLODES!");
+    
   }
   
   

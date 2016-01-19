@@ -38,9 +38,9 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 		} else if (key == KeyEvent.VK_R){
 		  ship.fireRocket();
 		} else if (key == KeyEvent.VK_Q){
-		  GamePanel.rotation -= 0.05d;
+		  ship.rotateLeft();
 		} else if (key == KeyEvent.VK_E){
-		  GamePanel.rotation += 0.05d;
+		  ship.rotateRight();
 		} else if (key == KeyEvent.VK_W){
 		  ship.fireLaser();
 		}
@@ -52,7 +52,6 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		ship.fireRocket();
 	}
 

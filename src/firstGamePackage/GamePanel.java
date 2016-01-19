@@ -52,14 +52,13 @@ public class GamePanel extends JPanel implements ActionListener {
   public static int SPEED = 2;
 
   static int t = 10;
-  public static double rotation = 0;
   protected Timer timer;
   
   protected Timer anim_timer;
   public final static int ANIMATION_INTERVALL = 200;
   // Stars
-  public final static int star_amount = 350;
-  public final static int enemy_amount = 15;
+  public final static int star_amount = 150;
+  public final static int enemy_amount = 5;
   public final static Star[] stars_array = new Star[star_amount];
   public final static List<Enemy> enemy_array = new ArrayList<>();
   public final static List<Laser> laser_array = new ArrayList<>();
@@ -93,7 +92,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     this.setFocusable(true);
     this.requestFocusInWindow(true);
-    
     
     animationListener = new AnimationListener();
     anim_timer = new Timer(ANIMATION_INTERVALL ,animationListener);
@@ -131,8 +129,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
   private void prepareBackImage(Graphics2D g2) {
 
-   g2.rotate(rotation);
-        
     g2.setColor(Color.RED);
     String rocketC = "Rockets: " + ship.getRocketCount();
     g2.drawString(rocketC, 25, 25);
@@ -153,9 +149,6 @@ public class GamePanel extends JPanel implements ActionListener {
   }
 
   public void prepareAllForNextFrame() {
-    for (Star star : stars_array) {
-      star.prepareNextFrame();
-    }
     
     for( Laser l : laser_array){
       l.prepareNextFrame();
@@ -172,9 +165,22 @@ public class GamePanel extends JPanel implements ActionListener {
         ship.rocket.explode();
         enemy.explode();
       }
+      for (Laser l : laser_array){
+        if (GraphicsTools.isColliding(l, enemy)){
+          enemy.explode();
+        }
+      }
+     
     }
     ship.prepareNextFrame();
 
+    // change Star direction! 
+    Star.setStarDirection(ship.getDirection());
+    
+    for (Star star : stars_array) {
+      star.prepareNextFrame();
+    }
+    
     for (Enemy enemy : enemy_array) {
       enemy.prepareNextFrame();
     }

@@ -10,8 +10,14 @@ public class Star{
 	int x;
 	int y;
 	
+	 int start_x;
+	int start_y;
+	
 	int size_width = 1; //between 1 and 3 pixel
-	int size_height = 1; 
+	int size_height = 1;
+  private static Direction direction = new Direction(0, 0); 
+	private int speed = 2;
+	
 	
 	public Star(){
 	  randomStar();
@@ -19,8 +25,9 @@ public class Star{
 	
 	private void randomStar(){
 	  x = (int)(Math.random() * 2 * GamePanel.x_max) - GamePanel.x_max;
-	  y=(int)(Math.random() * 2 * GamePanel.y_max) - GamePanel.y_max;
-	  
+	  y= (int)(Math.random() * 2 * GamePanel.y_max) - GamePanel.y_max;
+	  start_x = x;
+	  start_y = y;
 	  size_width=(int)(Math.random()*4);
 	  size_height=(int)(Math.random()*4);
 	}
@@ -30,14 +37,19 @@ public class Star{
 		g2.fillOval( x , y, size_width, size_height);
 		return g2;
 	}
-
   
   public void prepareNextFrame() {
     //Move star to the left with main-speed, when arrived, restart on the right side, random new form!
-    if (x>=0){
-      x = x-GamePanel.SPEED;
-    } else {
-      randomStar();
-    }
+    if (x < 0 ||x > GamePanel.x_max ) x = start_x;
+    
+    if (y < 0 ||y >GamePanel.y_max ) y = start_y;
+      
+      x = x - (int)(direction.getX_dir() * speed);
+      y = y - (int)(direction.getY_dir() * speed);
   }
+  
+  public static void setStarDirection(Direction dir){
+    direction  = dir;
+  }
+  
 }

@@ -1,6 +1,8 @@
 package firstGamePackage;
 
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints.Key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,6 +14,7 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
   private final Ship ship;
   
+  private boolean aimMode = false;
   
   public ShipStyrning( Ship ship) {
     this.ship = ship;
@@ -43,20 +46,41 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 		  ship.rotateRight();
 		} else if (key == KeyEvent.VK_W){
 		  ship.fireLaser();
+		} else if (key == KeyEvent.VK_SPACE){
+		  toggleAimMode();
 		}
 	}
 
-	@Override
+	// leave aimmode by mouse click on ship
+	private void toggleAimMode() {
+    if (!aimMode){
+      aimMode = true;
+    }
+  }
+
+  @Override
 	public void keyReleased(KeyEvent e) {
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		ship.fireRocket();
+ Rectangle r = new Rectangle(ship.x,ship.y,ship.width,ship.height);
+    
+    if (r.contains(new Point(e.getX(),e.getY()))){
+      aimMode = false;
+    } else {
+      ship.fireRocket();
+      new Thread(new RocketTargetLock(ship.rocket, e.getX(), e.getY())).start();
+    }
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+	  Rectangle r = new Rectangle(ship.x,ship.y,ship.width,ship.height);
+	  
+	  if (r.contains(new Point(e.getX(),e.getY()))){
+	    aimMode = false;
+	  }
 	}
 
 	@Override
@@ -78,8 +102,12 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-	  ship.x = e.getX(); 
-	  ship.y = e.getY(); 
+	  if (aimMode){
+	    
+	  }else {
+	    ship.x = e.getX(); 
+	    ship.y = e.getY(); 
+	  }
 	}
 
 	

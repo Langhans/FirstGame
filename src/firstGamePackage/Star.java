@@ -25,7 +25,7 @@ public class Star{
 	
 	private void randomStar(){
 	  x = (int)(Math.random() * 2 * GamePanel.x_max) - GamePanel.x_max;
-	  y= (int)(Math.random() * 2 * GamePanel.y_max) - GamePanel.y_max;
+	  y = (int)(Math.random() * 2 * GamePanel.y_max) - GamePanel.y_max;
 	  start_x = x;
 	  start_y = y;
 	  size_width=(int)(Math.random()*4);
@@ -40,9 +40,9 @@ public class Star{
   
   public void prepareNextFrame() {
     //Move star to the left with main-speed, when arrived, restart on the right side, random new form!
-    if (x < 0 ||x > GamePanel.x_max ) x = start_x;
+    if (x < 0 ||x > GamePanel.x_max ) x = 0 - start_x;
     
-    if (y < 0 ||y >GamePanel.y_max ) y = start_y;
+    if (y < 0 ||y >GamePanel.y_max ) y = 0 - start_y;
       
       x = x - (int)(direction.getX_dir() * speed);
       y = y - (int)(direction.getY_dir() * speed);

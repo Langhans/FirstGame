@@ -30,7 +30,7 @@ public class Ship extends AbstrGameObject {
    */
   
   
-  private static final double ROT_UNIT = 0.3d;
+  private static final double ROT_UNIT = 0.2d;
 
   private Image image;
   
@@ -49,10 +49,12 @@ public class Ship extends AbstrGameObject {
   // Vapen
   protected Rocket rocket = null;
   protected int rocket_count;
+  protected boolean aimMode = false;
+  protected RocketTargetLock targetLock = null;
   
   public Ship() {
     rocket_count = 10;
-    rocket = new Rocket();
+//    rocket = new Rocket();
 
 //  Startposition for spaceship
     super.x = GamePanel.x_max / 2;
@@ -72,7 +74,6 @@ public class Ship extends AbstrGameObject {
   @Override
   public Graphics2D draw(Graphics2D g2) {
 
-    adjustRealXandY();
     g2.translate(x_real + width / 2 , y_real + height / 2 );
     g2.rotate(theta);
     g2.drawImage(ship_image, 0 - width/2, 0 - height/2, width, height, null);
@@ -81,30 +82,22 @@ public class Ship extends AbstrGameObject {
     return g2;
   }
   
-  private void adjustRealXandY(){
-    
-    if (x < x_real){
-      x_real -= 2;
-    } else if( x > x_real ){
-      x_real += 2;
-    }
-    
-    if (y < y_real){
-      y_real -= 2 ;
-    } else if (y > y_real){
-      y_real += 2;
-    }
-  }
-
   @Override
   public void prepareNextFrame() {
 
+    adjustRealXandY();
+    
     if (exploding) {
       // ship_image = null;     
       System.out.println("SHIP HIT!");
     } else {
       ship_image = super.image;
     }
+  }
+
+  @Override
+  public void explode() {
+    super.exploding = true;
   }
 
   // return ships aktuella position
@@ -131,6 +124,7 @@ public class Ship extends AbstrGameObject {
       super.y -= step;
   }
   
+  
   public Direction getDirection(){
     return direction;
   }
@@ -140,16 +134,15 @@ public class Ship extends AbstrGameObject {
       super.y += step;
   }
 
-  public void moveFwd() {
+  public void moveRight() {
     if (super.x <= GamePanel.x_max - width - step)
       super.x += step;
   }
 
-  public void moveBwd() {
+  public void moveLeft() {
     if (super.x >= step)
       super.x -= step;
   }
-  
   
   public void rotateRight(){
     crankRight();
@@ -161,6 +154,54 @@ public void rotateLeft(){
     calcNewDirectionFromTetha();
   }
   
+  public void exploding(){
+  // TODO SHIP exploding()
+  System.out.println("SHIP EXPLODES!");
+}
+
+public void fireLaser() {
+  GamePanel.laser_array.add(new Laser(
+      getWeaponStartX(), 
+      getWeaponStartY(), 
+      new Direction(
+          direction.getX_dir(),
+          direction.getY_dir()),
+          theta ));
+}
+
+  public void fireRocket() {
+  
+    if (targetLock == null || targetLock.getTarget() == null){
+      return;
+    } 
+    
+  if (rocket_count >= 1 && rocket == null ) {
+    
+    rocket = new Rocket(targetLock.getTarget());
+    rocket.initRocket(
+        getWeaponStartX() ,
+        getWeaponStartY() );
+    rocket_count -= 1;
+    rocket.setFired();
+  } 
+}
+
+  // adjusting per frame for smooth motion
+  private void adjustRealXandY(){
+  
+  if (x < x_real){
+    x_real -= 2;
+  } else if( x > x_real ){
+    x_real += 2;
+  }
+  
+  if (y < y_real){
+    y_real -= 2 ;
+  } else if (y > y_real){
+    y_real += 2;
+  }
+}
+
   // calculate new direction from changed angle of ship
   private void calcNewDirectionFromTetha() {
     direction.setX_dir(Math.cos(theta) );
@@ -183,18 +224,6 @@ public void rotateLeft(){
       theta = theta + ROT_UNIT;
     }
   }
-
-  
-  public void fireRocket() {
-    
-    if (this.rocket_count >= 1 && !rocket.isFired()) {
-      this.rocket.initRocket(
-          getWeaponStartX() ,
-          getWeaponStartY() );
-      this.rocket_count -= 1;
-      this.rocket.setFired();
-    } 
-  }
   
   private int getWeaponStartX(){
     return x_real + width/2  + (int)((width/2) * Math.cos(theta));
@@ -204,23 +233,20 @@ public void rotateLeft(){
     return y_real + height/2 + (int)((height / 2) * Math.sin(theta));
   }
 
-  public void exploding(){
-    // TODO SHIP exploding()
-    System.out.println("SHIP EXPLODES!");
+  public boolean isInAimMode() {
+   return aimMode;
   }
   
-  @Override
-  public void explode() {
-    super.exploding = true;
+  public void setTargetLock(RocketTargetLock rocketTargetLock) {
+    if (this.targetLock == null){
+      this.targetLock = rocketTargetLock;
+      targetLock.start();
+    }
   }
 
-  public void fireLaser() {
-    GamePanel.laser_array.add(new Laser(
-        getWeaponStartX(), 
-        getWeaponStartY(), 
-        new Direction(
-            direction.getX_dir(),
-            direction.getY_dir()),
-            theta ));
+  public void clearRocket() {
+   rocket = null;
+   targetLock = null;
+    
   }
 }// End Class Ship

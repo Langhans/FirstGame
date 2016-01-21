@@ -53,7 +53,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
   static int t = 10;
   protected Timer timer;
-  
+
   protected Timer anim_timer;
   public final static int ANIMATION_INTERVALL = 200;
   // Stars
@@ -63,9 +63,9 @@ public class GamePanel extends JPanel implements ActionListener {
   public final static List<Enemy> enemy_array = new ArrayList<>();
   public final static List<Laser> laser_array = new ArrayList<>();
   public final static List<AbstrGameObject> explo_array = new ArrayList<>();
-  
+
   private static AnimationListener animationListener;
-  
+
   private Ship ship = null;
 
   private static Graphics g;
@@ -78,7 +78,7 @@ public class GamePanel extends JPanel implements ActionListener {
     timer = new Timer(FRAME_INTERVALL, this);
     g = this.getGraphics();
     g2 = (Graphics2D) g;
-    
+
     makeStars();
 
     // skapa ship-Obj
@@ -92,12 +92,123 @@ public class GamePanel extends JPanel implements ActionListener {
 
     this.setFocusable(true);
     this.requestFocusInWindow(true);
-    
+
     animationListener = new AnimationListener();
-    anim_timer = new Timer(ANIMATION_INTERVALL ,animationListener);
-    
-    timer.start(); 
+    anim_timer = new Timer(ANIMATION_INTERVALL, animationListener);
+
+    timer.start();
     anim_timer.start();
+  }
+
+  public void prepareAllForNextFrame() {
+
+    for (Laser l : laser_array) {
+      l.prepareNextFrame();
+    }
+
+    Enemy enemy;
+
+    for (int i = 0; i < enemy_array.size(); i++) {
+
+      enemy = enemy_array.get(i);
+      // enemy.prepareNextFrame();
+
+      if (GraphicsTools.isColliding(ship, enemy)) {
+        explo_array.add(ship);
+        explo_array.add(enemy);
+        enemy_array.remove(enemy);
+      }
+
+      for (Laser l : laser_array) {
+        if (GraphicsTools.isColliding(l, enemy)) {
+          explo_array.add(enemy);
+          enemy_array.remove(enemy);
+        }
+      }
+    }
+
+    ship.prepareNextFrame();
+
+    // change Star direction!
+    Star.setStarDirection(ship.getDirection());
+
+    for (Star star : stars_array) {
+      star.prepareNextFrame();
+    }
+
+    for (Enemy e : enemy_array) {
+      e.prepareNextFrame();
+    }
+
+    prepareRocketsNextFrame();
+  }
+
+  private void prepareRocketsNextFrame() {
+    if (ship.rocket != null && ship.rocket.isFired()) {
+
+      final AbstrGameObject target = ship.rocket.getTarget();
+
+      int xR = ship.rocket.getX();
+      int yR = ship.rocket.getY();
+
+      if (xR < 0 || xR < 0 || xR > GamePanel.x_max || yR > GamePanel.y_max) {
+        ship.rocket = null;
+        return;
+      }
+
+      if (GraphicsTools.isColliding(ship.rocket, target)) {
+        explo_array.add(target);
+        explo_array.add(ship.rocket);
+        ship.clearRocket();
+      } else {
+        ship.rocket.prepareNextFrame();
+      }
+    }
+  }
+
+  private void drawEnemyImage(Graphics2D g2) {
+    for (Enemy enemy : enemy_array) {
+      enemy.draw(g2);
+    }
+  }
+
+  private void drawBackImage(Graphics2D g2) {
+
+    // TODO move to info-bar in different GUI panel
+    g2.setColor(Color.RED);
+    String rocketC = "Rockets: " + ship.getRocketCount();
+    g2.drawString(rocketC, 25, 25);
+
+    for (Star star : stars_array) {
+      star.draw(g2);
+    }
+
+    ship.draw(g2);
+
+    for (Laser l : laser_array) {
+      l.draw(g2);
+    }
+
+    if (ship.rocket != null) {
+      ship.rocket.draw(g2);
+    }
+  }
+
+  public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
+    // draw till buffered Images!
+    drawBackImage(g2);
+    drawEnemyImage(g2);
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+
+    prepareAllForNextFrame();
+    repaint();
   }
 
   private void makeEnemies() {
@@ -111,102 +222,16 @@ public class GamePanel extends JPanel implements ActionListener {
       stars_array[i] = new Star();
   }
 
-  public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-        RenderingHints.VALUE_ANTIALIAS_ON);
-    // draw till buffered Images!
-  prepareBackImage(g2);
-  prepareEnemyImage(g2);
-  }
-
-  private void prepareEnemyImage(Graphics2D g2) {
-    for (Enemy enemy : enemy_array) {
-      enemy.draw(g2);
-    }
-  }
-
-  private void prepareBackImage(Graphics2D g2) {
-
-    g2.setColor(Color.RED);
-    String rocketC = "Rockets: " + ship.getRocketCount();
-    g2.drawString(rocketC, 25, 25);
-
-    for (Star star : stars_array) {
-      star.draw(g2);
-    }
-    
-    ship.draw(g2);
-
-    for(Laser l : laser_array){
-      l.draw(g2);
-    }
-    
-    if (ship.rocket.isFired()) {
-      ship.rocket.draw(g2);
-    }
-  }
-
-  public void prepareAllForNextFrame() {
-    
-    for( Laser l : laser_array){
-      l.prepareNextFrame();
-    }
-
-    for (Enemy enemy : enemy_array) {
-      if (GraphicsTools.isColliding(ship, enemy)) {
-        ship.explode();
-      }
-      if (ship.rocket.isFired()
-          && GraphicsTools.isColliding(ship.rocket, enemy)) {
-        explo_array.add(enemy);
-        explo_array.add(ship.rocket);
-        ship.rocket.explode();
-        enemy.explode();
-      }
-      for (Laser l : laser_array){
-        if (GraphicsTools.isColliding(l, enemy)){
-          enemy.explode();
-        }
-      }
-     
-    }
-    ship.prepareNextFrame();
-
-    // change Star direction! 
-    Star.setStarDirection(ship.getDirection());
-    
-    for (Star star : stars_array) {
-      star.prepareNextFrame();
-    }
-    
-    for (Enemy enemy : enemy_array) {
-      enemy.prepareNextFrame();
-    }
-
-    if (ship.rocket.isFired()) {
-      ship.rocket.prepareNextFrame();
-    }
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent e) {
-
-    prepareAllForNextFrame();
-    repaint();
-  }
-  
-  private class AnimationListener implements ActionListener{
+  private class AnimationListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      for (int i = 0 ; i < explo_array.size() ; i++){
+      for (int i = 0; i < explo_array.size(); i++) {
         explo_array.get(i).animationTick();
       }
     }
   }
-  
+
   // windowlistener -> resize panelsize, maxX och Y för att anpassa vid ändrat
   // window!!!
 

@@ -14,7 +14,7 @@ public class Rocket extends AbstrGameObject {
 
   private boolean exploding = false;
   private boolean fired = false;
-  private final int speed = 5;
+  private final int speed = 10;
 
   private Image rocket_image;
   private AbstrGameObject target;
@@ -22,14 +22,11 @@ public class Rocket extends AbstrGameObject {
   private Direction direction = new Direction(1, 0);
   private double theta = 0;
 
-  public Rocket() {
+  public Rocket(AbstrGameObject target) {
     super.height = 25;
     super.width = 50;
     super.image = GraphicsTools.makeImage("/Pics/rocket.png");
     rocket_image = super.image;
-  }
-
-  public void setTarget(AbstrGameObject target) {
     this.target = target;
   }
 
@@ -50,19 +47,14 @@ public class Rocket extends AbstrGameObject {
   }
 
   public void prepareNextFrame() {
-    if (target != null) {
-      adjustDirectionToTarget();
-    }
+
+    adjustDirectionToTarget();
 
     if (fired) {
       x = x + (int) (direction.getX_dir() * speed);
       y = y + (int) (direction.getY_dir() * speed);
-
-      if (x > GamePanel.x_max || y > GamePanel.y_max) {
-        fired = false;
-      }
     }
-  }// end next frame Rocket
+  }
 
   private void adjustDirectionToTarget() {
     double dx = target.x - x;
@@ -74,8 +66,8 @@ public class Rocket extends AbstrGameObject {
       this.explode();
       target.explode();
     } else {
-      double sin = dy / Math.sqrt(hyp);
-      double cos = dx / Math.sqrt(hyp);
+      double sin = dy / hyp;
+      double cos = dx / hyp;
       direction.setX_dir(cos); // cos(t)
       direction.setY_dir(sin); // sin(t)
       theta = Math.atan(sin / cos);
@@ -101,6 +93,10 @@ public class Rocket extends AbstrGameObject {
   public void explode() {
     // TODO Rocket exploding()
     System.out.println("ROCKET EXPLODES!");
+  }
+
+  public AbstrGameObject getTarget() {
+    return target;
   }
 
 }// End Class Rocket

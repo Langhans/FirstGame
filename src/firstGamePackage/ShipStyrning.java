@@ -14,7 +14,6 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
   private final Ship ship;
   
-  private boolean aimMode = false;
   
   public ShipStyrning( Ship ship) {
     this.ship = ship;
@@ -31,13 +30,13 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 	  int key = e.getKeyCode();
 		
 		if (key == KeyEvent.VK_UP){
-		  ship.moveFwd();
-		} else if (key == KeyEvent.VK_RIGHT){
-		  ship.moveDown();
-		} else if (key == KeyEvent.VK_LEFT){
 		  ship.moveUp();
+		} else if (key == KeyEvent.VK_RIGHT){
+		  ship.moveRight();
+		} else if (key == KeyEvent.VK_LEFT){
+		  ship.moveLeft();
 		} else if (key == KeyEvent.VK_DOWN){
-		  ship.moveBwd();
+		  ship.moveDown();
 		} else if (key == KeyEvent.VK_R){
 		  ship.fireRocket();
 		} else if (key == KeyEvent.VK_Q){
@@ -53,8 +52,8 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
 	// leave aimmode by mouse click on ship
 	private void toggleAimMode() {
-    if (!aimMode){
-      aimMode = true;
+    if (!ship.aimMode){
+      ship.aimMode = true;
     }
   }
 
@@ -64,22 +63,24 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
- Rectangle r = new Rectangle(ship.x,ship.y,ship.width,ship.height);
-    
-    if (r.contains(new Point(e.getX(),e.getY()))){
-      aimMode = false;
-    } else {
-      ship.fireRocket();
-      new Thread(new RocketTargetLock(ship.rocket, e.getX(), e.getY())).start();
-    }
+	  Rectangle r = new Rectangle(ship.x,ship.y,ship.width,ship.height);
+	  
+	  if (r.contains(new Point(e.getX(),e.getY()))){
+	    ship.aimMode = false;
+	  }
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-	  Rectangle r = new Rectangle(ship.x,ship.y,ship.width,ship.height);
 	  
-	  if (r.contains(new Point(e.getX(),e.getY()))){
-	    aimMode = false;
+	  Rectangle shipRect = new Rectangle(ship.x,ship.y,ship.width,ship.height);
+	  
+	  if (shipRect.contains(new Point(e.getX() , e.getY()))){
+	    ship.aimMode = false;
+	    ship.targetLock = null;
+	  } else {
+	    RocketTargetLock targetLock = new RocketTargetLock(ship , e.getX(), e.getY() );
+	    ship.setTargetLock( targetLock);
 	  }
 	}
 
@@ -102,8 +103,8 @@ public class ShipStyrning implements KeyListener, MouseListener, MouseMotionList
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-	  if (aimMode){
-	    
+	  if (ship.aimMode){
+	    ;
 	  }else {
 	    ship.x = e.getX(); 
 	    ship.y = e.getY(); 

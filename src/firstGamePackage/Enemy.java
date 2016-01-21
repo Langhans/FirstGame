@@ -1,5 +1,6 @@
 package firstGamePackage;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -17,7 +18,7 @@ public class Enemy extends AbstrGameObject {
   private Image enemy_image;
 
   private Image[] explo_pics;
-
+  private boolean targetLocked = false;
   static int step = 8;
 
   public Enemy() {
@@ -31,11 +32,13 @@ public class Enemy extends AbstrGameObject {
     explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
   }
 
- 
-
   @Override
   public Graphics2D draw(Graphics2D g2) {
-    g2.setColor(Color.RED);
+    if (targetLocked){
+      g2.setColor(Color.RED);
+      g2.setStroke(new BasicStroke(3));
+      g2.drawRect(x, y , width, height);
+    }
     g2.drawImage(enemy_image, x, y, width, height, null);
     return g2;
   }
@@ -43,8 +46,12 @@ public class Enemy extends AbstrGameObject {
   @Override
   public void prepareNextFrame() {
     if (exploding) {
-       enemy_image = explo_pics[tick-1];
+       enemy_image = explo_pics[tick];
+       if (tick < 1){
+         enemy_image = super.image;
+       }
     } else {
+      
       if (x >= -width) {
         x -= 3;
         // y = (int)( 450 * Math.sin( (Math.PI)/ (x/2) ) );
@@ -56,8 +63,14 @@ public class Enemy extends AbstrGameObject {
 
   @Override
   public void explode() {
-    tick = explo_pics.length; // count of explosion frames
+    tick = explo_pics.length - 1   ; // count of explosion frames
     exploding = true;
+  }
+
+
+
+  public void setTargetLocked() {
+    targetLocked = true;
   }
 
 }// End of class Enemy

@@ -3,30 +3,38 @@ package firstGamePackage;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-public class RocketTargetLock implements Runnable {
+public class RocketTargetLock extends Thread {
 
-  private Rocket rocket;
-  private int coord_x;
-  private int coord_y;
-  
-  public RocketTargetLock(Rocket rocket , int x , int y) {
-   this.rocket = rocket;
-   coord_x =x;
-   coord_y = y;
+  private Ship ship;
+  private int mouse_x;
+  private int mouse_y;
+  private AbstrGameObject target;
+
+  public RocketTargetLock(Ship ship, int x, int y) {
+    this.ship = ship;
+    mouse_x = x;
+    mouse_y = y;
   }
-  
+
+  public AbstrGameObject getTarget() {
+    return target;
+  }
+
   @Override
   public void run() {
+
     Rectangle r;
-    
-    for (Enemy enemy : GamePanel.enemy_array){
+
+    for (Enemy enemy : GamePanel.enemy_array) {
       // if intersects with an enemy
-      r = new Rectangle(enemy.x,enemy.y,enemy.width,enemy.height);
-      
-      if (r.contains(new Point(coord_x, coord_y))){
-        rocket.setTarget(enemy);
-        enemy.height += 40;
-      }  
+      r = new Rectangle(enemy.x, enemy.y, enemy.width, enemy.height);
+
+      if (r.contains(new Point(mouse_x, mouse_y))) {
+        this.target = enemy;
+        enemy.setTargetLocked();
+
+      }
+
     }
   }
 }

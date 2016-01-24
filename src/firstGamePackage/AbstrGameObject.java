@@ -14,7 +14,8 @@ public abstract class AbstrGameObject {
   protected int height;
   protected Image image;
   protected boolean exploding = false;
-  protected int tick = -1;
+  protected int tick = 0;
+  protected Image[] explo_pics;
 
   public abstract Graphics2D draw(Graphics2D g2);
 
@@ -27,11 +28,14 @@ public abstract class AbstrGameObject {
       tick = -1;
       return;
     } else {
-      System.out.println("TICK");
       tick--;
     }
   }
   
-  public abstract void explode();
+  public void explode(){
+    tick = explo_pics.length - 1; // count of explosion frames
+    exploding = true;
+  }
+
   
 }

@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 public class Rocket extends AbstrGameObject {
 
+  private static final double ROCKET_ROT_SPEED = 0.2;
   // Rockets state
 
   private boolean exploding = false;
@@ -19,8 +20,9 @@ public class Rocket extends AbstrGameObject {
   private Image rocket_image;
   private AbstrGameObject target;
 
-  private Direction direction = new Direction(1, 0);
+  private Direction direction;
   private double theta = 0;
+
 
   public Rocket(AbstrGameObject target) {
     super.height = 25;
@@ -28,22 +30,34 @@ public class Rocket extends AbstrGameObject {
     super.image = GraphicsTools.makeImage("/Pics/rocket.png");
     rocket_image = super.image;
     this.target = target;
+    explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
   }
 
   public Graphics2D draw(Graphics2D g2) {
+    
+    if (!exploding) {
+      g2.translate(x + width / 2, y + height / 2);
+      g2.rotate(theta);
+      g2.drawImage(rocket_image,  - width / 2,  - height / 2, width , height,
+          null);
+      g2.rotate(-theta);
+      g2.translate(-(x + width / 2), -(y + height / 2));
+    } else {
 
-    g2.translate(x + width / 2, y + height / 2);
-    g2.rotate(theta);
-    g2.drawImage(rocket_image, 0 - width / 2, 0 - height / 2, width, height,
-        null);
-    g2.rotate(-theta);
-    g2.translate(-(x + width / 2), -(y + height / 2));
+      if (tick < 0) {
+        rocket_image = super.image;
+      } else {
+        rocket_image = explo_pics[tick];
+      }
+    }
     return g2;
   }
 
-  public void initRocket(int x, int y) {
+  public void initRocket(double theta, int x, int y) {
+    this.theta = theta;
     super.x = x;
     super.y = y;
+    direction = GraphicsTools.getDirectionFromAngle(theta);
   }
 
   public void prepareNextFrame() {
@@ -68,9 +82,20 @@ public class Rocket extends AbstrGameObject {
     } else {
       double sin = dy / hyp;
       double cos = dx / hyp;
-      direction.setX_dir(cos); // cos(t)
-      direction.setY_dir(sin); // sin(t)
-      theta = Math.atan(sin / cos);
+      double newDir = Math.atan(sin/cos);
+      if (theta - newDir > ROCKET_ROT_SPEED){
+        newDir = theta - ROCKET_ROT_SPEED;
+      }else if (newDir - theta >ROCKET_ROT_SPEED){
+        newDir = theta + ROCKET_ROT_SPEED;
+      }
+      //TODO rocket rotation, flying backwards!?
+      if (dx < 0) {
+        theta =  newDir ; 
+      } else {
+        theta = newDir;
+      }
+      direction.setX_dir(Math.cos(theta)); // cos(t)
+      direction.setY_dir(Math.sin(theta)); // sin(t)
     }
   }
 
@@ -90,10 +115,6 @@ public class Rocket extends AbstrGameObject {
     return this.y;
   }
 
-  public void explode() {
-    // TODO Rocket exploding()
-    System.out.println("ROCKET EXPLODES!");
-  }
 
   public AbstrGameObject getTarget() {
     return target;

@@ -19,8 +19,8 @@ public class Laser extends AbstrGameObject{
   static {
     try {
     laser = ImageIO.read(Laser.class.getResourceAsStream("/Pics/laser.png"));
-     width = laser.getWidth(null) / 2 ;
-    height = laser.getHeight(null) / 2;
+     width = laser.getWidth(null)  ;
+    height = laser.getHeight(null) ;
     
     } catch (Exception e){
       e.printStackTrace();

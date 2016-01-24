@@ -15,21 +15,26 @@ import javax.swing.Timer;
 
 public class Enemy extends AbstrGameObject {
 
-  private Image enemy_image;
+  protected Image enemy_image;
 
-  private Image[] explo_pics;
-  private boolean targetLocked = false;
-  static int step = 8;
+  protected boolean targetLocked = false;
+  
+  protected Direction direction = new Direction(1, 0);
+  protected int speed = 4;
 
   public Enemy() {
-    super.image = GraphicsTools.makeImage("/Pics/enemy1.png");
+    image = GraphicsTools.makeImage("/Pics/enemy1.png");
     enemy_image = super.image;
     super.x = GamePanel.x_max + (int) (GamePanel.x_max * Math.random());
     super.y = (int) (GamePanel.y_max * Math.random());
     super.width = 50;
     super.height = 50;
-
-    explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
+    super.explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
+  }
+  
+  public Enemy( Direction dir){
+    this();
+    direction = dir;
   }
 
   @Override
@@ -46,31 +51,24 @@ public class Enemy extends AbstrGameObject {
   @Override
   public void prepareNextFrame() {
     if (exploding) {
-       enemy_image = explo_pics[tick];
-       if (tick < 1){
+       if (tick < 0){
          enemy_image = super.image;
+       } else{
+       enemy_image = explo_pics[tick];
        }
     } else {
-      
-      if (x >= -width) {
-        x -= 3;
-        // y = (int)( 450 * Math.sin( (Math.PI)/ (x/2) ) );
-      } else {
-        this.x = GamePanel.x_max + 25;
-      }
+      GraphicsTools.flipOverGameObjPosition(this);
+        x = x + (int) (direction.getX_dir() * speed);
+        y = y + (int) (direction.getY_dir() * speed);
     }
   }
 
-  @Override
-  public void explode() {
-    tick = explo_pics.length - 1   ; // count of explosion frames
-    exploding = true;
-  }
-
-
-
   public void setTargetLocked() {
     targetLocked = true;
+  }
+  
+  public void setTargetUnlocked(){
+    targetLocked = false;
   }
 
 }// End of class Enemy

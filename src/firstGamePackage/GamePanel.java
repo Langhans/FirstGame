@@ -64,9 +64,11 @@ public class GamePanel extends JPanel implements ActionListener {
   public final static List<Laser> laser_array = new ArrayList<>();
   public final static List<AbstrGameObject> explo_array = new ArrayList<>();
 
+  public static final boolean TESTMODE = true;
+
   private static AnimationListener animationListener;
 
-  private Ship ship = null;
+  public static Ship ship = null;
 
   private static Graphics g;
   private static Graphics2D g2;
@@ -98,36 +100,41 @@ public class GamePanel extends JPanel implements ActionListener {
 
     timer.start();
     anim_timer.start();
+    
+    new EnemyMaker().start();
   }
 
   public void prepareAllForNextFrame() {
 
-    for (Laser l : laser_array) {
-      l.prepareNextFrame();
-    }
-
     Enemy enemy;
 
     for (int i = 0; i < enemy_array.size(); i++) {
-
       enemy = enemy_array.get(i);
-      // enemy.prepareNextFrame();
 
       if (GraphicsTools.isColliding(ship, enemy)) {
         explo_array.add(ship);
         explo_array.add(enemy);
+        ship.explode();
+        enemy.explode();
         enemy_array.remove(enemy);
       }
 
       for (Laser l : laser_array) {
         if (GraphicsTools.isColliding(l, enemy)) {
+          
           explo_array.add(enemy);
+          enemy.explode();
           enemy_array.remove(enemy);
         }
       }
+      enemy.prepareNextFrame();
     }
 
     ship.prepareNextFrame();
+
+    for (Laser l : laser_array) {
+      l.prepareNextFrame();
+    }
 
     // change Star direction!
     Star.setStarDirection(ship.getDirection());
@@ -136,10 +143,19 @@ public class GamePanel extends JPanel implements ActionListener {
       star.prepareNextFrame();
     }
 
-    for (Enemy e : enemy_array) {
-      e.prepareNextFrame();
+   AbstrGameObject obj;
+    
+    for (int i = 0 ; i < explo_array.size() ; i++){
+     obj = explo_array.get(i);
+     if( obj.tick > -1 )
+       obj.prepareNextFrame();
+     else 
+       explo_array.remove(i);
+       if (obj instanceof Rocket){
+         explo_array.remove(i);
+       }
     }
-
+    
     prepareRocketsNextFrame();
   }
 
@@ -147,19 +163,22 @@ public class GamePanel extends JPanel implements ActionListener {
     if (ship.rocket != null && ship.rocket.isFired()) {
 
       final AbstrGameObject target = ship.rocket.getTarget();
-
       int xR = ship.rocket.getX();
       int yR = ship.rocket.getY();
 
-      if (xR < 0 || xR < 0 || xR > GamePanel.x_max || yR > GamePanel.y_max) {
-        ship.rocket = null;
-        return;
-      }
+//      if (GraphicsTools.outOfPanel(ship.rocket)) {
+//        ship.rocket = null;
+//        return;
+//      }
+      GraphicsTools.flipOverGameObjPosition(ship.rocket);
 
       if (GraphicsTools.isColliding(ship.rocket, target)) {
         explo_array.add(target);
         explo_array.add(ship.rocket);
-        ship.clearRocket();
+        ship.rocket.explode();
+        target.explode();
+        enemy_array.remove(target);
+        ship.resetRocket();
       } else {
         ship.rocket.prepareNextFrame();
       }
@@ -192,6 +211,10 @@ public class GamePanel extends JPanel implements ActionListener {
     if (ship.rocket != null) {
       ship.rocket.draw(g2);
     }
+    
+    for( AbstrGameObject obj : explo_array){
+      obj.draw(g2);
+    }
   }
 
   public void paintComponent(Graphics g) {
@@ -199,7 +222,7 @@ public class GamePanel extends JPanel implements ActionListener {
     Graphics2D g2 = (Graphics2D) g;
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
-    // draw till buffered Images!
+    // draw till buffered Images!?
     drawBackImage(g2);
     drawEnemyImage(g2);
   }
@@ -221,7 +244,8 @@ public class GamePanel extends JPanel implements ActionListener {
     for (int i = 0; i < star_amount; i++)
       stars_array[i] = new Star();
   }
-
+  
+  
   private class AnimationListener implements ActionListener {
 
     @Override
@@ -229,6 +253,24 @@ public class GamePanel extends JPanel implements ActionListener {
       for (int i = 0; i < explo_array.size(); i++) {
         explo_array.get(i).animationTick();
       }
+    }
+  }
+  
+  
+  private class EnemyMaker extends Thread implements ActionListener{
+
+    private Timer timer;
+    
+    public EnemyMaker(){
+      timer = new Timer(2500 , this);
+      timer.start();
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      // TODO Auto-generated method stub
+      enemy_array.add(new Enemy());
+      
     }
   }
 

@@ -25,14 +25,21 @@ public class RocketTargetLock extends Thread {
 
     Rectangle r;
 
-    for (Enemy enemy : GamePanel.enemy_array) {
-      // if intersects with an enemy
-      r = new Rectangle(enemy.x, enemy.y, enemy.width, enemy.height);
+    if (GamePanel.TESTMODE) {
+      this.target = GamePanel.enemy_array.get(0);
+      GamePanel.enemy_array.get(0).setTargetLocked();
 
-      if (r.contains(new Point(mouse_x, mouse_y))) {
-        this.target = enemy;
-        enemy.setTargetLocked();
+    } else {
 
+      for (Enemy enemy : GamePanel.enemy_array) {
+        // if intersects with an enemy
+        r = new Rectangle(enemy.x, enemy.y, enemy.width, enemy.height);
+
+        if (r.contains(new Point(mouse_x, mouse_y))) {
+          this.target = enemy;
+          enemy.setTargetLocked();
+
+        }
       }
 
     }

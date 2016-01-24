@@ -48,7 +48,8 @@ public class GraphicsTools {
 
 
   public static boolean isColliding(AbstrGameObject obj1 , AbstrGameObject obj2){
-    Rectangle r1 = new Rectangle(obj1.x , obj1.y , obj1.width , obj1.height);
+    
+    Rectangle r1 = new Rectangle(obj1.x , obj1.y , obj1.width  , obj1.height);
     Rectangle r2 = new Rectangle(obj2.x , obj2.y , obj2.width , obj2.height);
     return r1.intersects(r2);
   }
@@ -82,6 +83,34 @@ public class GraphicsTools {
       obj.y = 0;
     } else if (obj.y + obj.height > GamePanel.y_max ){
       obj.y = GamePanel.y_max - obj.height;
+    }
+  }
+  
+  
+  public static Direction getDirectionFromAngle(double theta){
+    return new Direction(Math.cos(theta), Math.sin(theta));
+  }
+
+  
+  public static boolean isInBounds(AbstrGameObject obj){
+    return (obj.x >= 0 && obj.y >= 0 && obj.x <= GamePanel.x_max &&
+        obj.y <= GamePanel.y_max);
+  }
+  
+  public static void flipOverGameObjPosition(AbstrGameObject obj){
+    if (obj.x < 0) obj.x = GamePanel.x_max;
+    if (obj.y < 0) obj.y = GamePanel.y_max;
+    if (obj.y > GamePanel.y_max) obj.y = 0;
+    if (obj.x > GamePanel.x_max) obj.x = 0;
+  }
+
+  public static boolean outOfPanel(AbstrGameObject obj) {
+    if (obj.x < 0 || obj.y < 0){
+      return true;
+    } else if( obj.x > GamePanel.x_max || obj.y > GamePanel.y_max){
+      return true;
+    } else {
+      return false;
     }
   }
   

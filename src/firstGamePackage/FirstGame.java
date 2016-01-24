@@ -4,7 +4,8 @@ public class FirstGame {
 
   public static void main(String[] args) {
     // TODO Auto-generated method stub
-    GameWindow window = new GameWindow();
+    System.out.println("START GAME");
+    GameWindow gw = GameWindow.getInstance();
   }
 
 }

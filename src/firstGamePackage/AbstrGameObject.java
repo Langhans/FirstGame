@@ -17,9 +17,10 @@ public abstract class AbstrGameObject {
   protected int tick = 0;
   protected Image[] explo_pics;
   protected Image obj_image;
-  protected Direction direction = new Direction(1, 0);
+  protected Direction direction = new Direction(1 , 0);
   protected int speed;
   protected double theta;
+  protected double ROT_SPEED;
   
   public abstract Graphics2D draw(Graphics2D g2);
 
@@ -37,7 +38,7 @@ public abstract class AbstrGameObject {
    }
   }
   
-  // takes this as argument in sub classes
+  // takes this as argument in sub classes - Template 
   protected abstract void objectSpecificMove(AbstrGameObject obj); 
   
   // has to be overriden with animation code

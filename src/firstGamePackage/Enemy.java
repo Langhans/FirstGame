@@ -38,21 +38,6 @@ public class Enemy extends AbstrGameObject {
     return g2;
   }
 
-//  @Override
-//  public void prepareNextFrame() {
-//    if (exploding) {
-//       if (tick < 0){
-//         enemy_image = super.image;
-//       } else{
-//       enemy_image = explo_pics[tick];
-//       }
-//    } else {
-//      GraphicsTools.flipOverGameObjPosition(this);
-//        x = x + (int) (direction.getX_dir() * speed);
-//        y = y + (int) (direction.getY_dir() * speed);
-//    }
-//  }
-
   public void setTargetLocked() {
     targetLocked = true;
   }

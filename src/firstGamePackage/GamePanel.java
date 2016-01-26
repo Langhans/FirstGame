@@ -269,8 +269,9 @@ public class GamePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       // TODO Auto-generated method stub
-      enemy_array.add(new Enemy2());
-      enemy_array.add(new Enemy());
+//      enemy_array.add(new Enemy2());
+//      enemy_array.add(new Enemy());
+      enemy_array.add(new Enemy3());
       
       
     }

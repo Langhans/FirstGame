@@ -6,7 +6,6 @@ import java.awt.Image;
 public class Enemy2 extends Enemy{
 
   private static AbstrGameObject target;
-  private double ROT_SPEED = 0.01;
   
   public Enemy2(){
     super();
@@ -15,24 +14,8 @@ public class Enemy2 extends Enemy{
     target = GamePanel.ship;
     speed = 2;
     theta = 0;
+    ROT_SPEED = 0.01;
   }
-  
-//  @Override
-//  public void prepareNextFrame() {
-//    if (exploding) {
-//       if (tick < 0){
-//         enemy_image = image;
-//       } else{
-//       enemy_image = explo_pics[tick];
-//       }
-//    } else {
-//      GraphicsTools.flipOverGameObjPosition(this);
-//      adjustDirectionToTarget();
-//        x = x + (int) (direction.getX_dir() * speed);
-//        y = y + (int) (direction.getY_dir() * speed);
-//    }
-//  }
-
   
   private void adjustDirectionToTarget() {
     double dx = target.x - x;

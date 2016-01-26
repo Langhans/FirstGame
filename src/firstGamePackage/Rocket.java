@@ -10,27 +10,29 @@ import javax.imageio.ImageIO;
 
 public class Rocket extends AbstrGameObject {
 
-  private static final double ROCKET_ROT_SPEED = 0.2;
+//  private static final double ROCKET_ROT_SPEED = 0.2;
   // Rockets state
 
   private boolean exploding = false;
   private boolean fired = false;
-  private final int speed = 10;
+//  private final int speed = 10;
 
-  private Image rocket_image;
+//  private Image rocket_image;
   private AbstrGameObject target;
 
-  private Direction direction;
-  private double theta = 0;
+//  private Direction direction;
+//  private double theta = 0;
 
 
   public Rocket(AbstrGameObject target) {
-    super.height = 25;
-    super.width = 50;
-    super.image = GraphicsTools.makeImage("/Pics/rocket.png");
-    rocket_image = super.image;
+    height = 25;
+    width = 50;
+    image = PictureFactory.rocket_img;
+    explo_pics = PictureFactory.explo1_imgs;
+    obj_image = image;
     this.target = target;
-    explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
+    speed = 10;
+    ROT_SPEED = 0.2;
   }
 
   public Graphics2D draw(Graphics2D g2) {
@@ -38,16 +40,16 @@ public class Rocket extends AbstrGameObject {
     if (!exploding) {
       g2.translate(x + width / 2, y + height / 2);
       g2.rotate(theta);
-      g2.drawImage(rocket_image,  - width / 2,  - height / 2, width , height,
+      g2.drawImage(obj_image,  - width / 2,  - height / 2, width , height,
           null);
       g2.rotate(-theta);
       g2.translate(-(x + width / 2), -(y + height / 2));
     } else {
 
       if (tick < 0) {
-        rocket_image = super.image;
+        obj_image = super.image;
       } else {
-        rocket_image = explo_pics[tick];
+        obj_image = explo_pics[tick];
       }
     }
     return g2;
@@ -62,11 +64,8 @@ public class Rocket extends AbstrGameObject {
 
   public void prepareNextFrame() {
 
-    adjustDirectionToTarget();
-
     if (fired) {
-      x = x + (int) (direction.getX_dir() * speed);
-      y = y + (int) (direction.getY_dir() * speed);
+     super.prepareNextFrame();
     }
   }
 
@@ -83,12 +82,12 @@ public class Rocket extends AbstrGameObject {
       double sin = dy / hyp;
       double cos = dx / hyp;
       double newDir = Math.atan(sin/cos);
-      if (theta - newDir > ROCKET_ROT_SPEED){
-        newDir = theta - ROCKET_ROT_SPEED;
-      }else if (newDir - theta >ROCKET_ROT_SPEED){
-        newDir = theta + ROCKET_ROT_SPEED;
+      if (theta - newDir > ROT_SPEED){
+        newDir = theta - ROT_SPEED;
+      }else if (newDir - theta >ROT_SPEED){
+        newDir = theta + ROT_SPEED;
       }
-      //TODO rocket rotation, flying backwards!?
+
       if (dx < 0) {
         theta =  newDir ; 
       } else {
@@ -115,15 +114,13 @@ public class Rocket extends AbstrGameObject {
     return this.y;
   }
 
-
   public AbstrGameObject getTarget() {
     return target;
   }
 
   @Override
   protected void objectSpecificMove(AbstrGameObject obj) {
-    // TODO Auto-generated method stub
-    
+    adjustDirectionToTarget();
   }
 
 }// End Class Rocket

@@ -120,4 +120,10 @@ public class Rocket extends AbstrGameObject {
     return target;
   }
 
+  @Override
+  protected void objectSpecificMove(AbstrGameObject obj) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }// End Class Rocket

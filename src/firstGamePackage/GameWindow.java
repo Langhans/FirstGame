@@ -39,7 +39,6 @@ public class GameWindow extends JFrame{
     }
   });
   
-  
   JLabel score_Lab = new JLabel ();
   score_Lab.setBorder(BorderFactory.createTitledBorder("Your Score:"));
   toolPanel.add(start_But);

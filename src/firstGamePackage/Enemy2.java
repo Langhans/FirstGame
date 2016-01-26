@@ -1,32 +1,37 @@
 package firstGamePackage;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+
 public class Enemy2 extends Enemy{
 
   private static AbstrGameObject target;
-  private double theta = 0;
   private double ROT_SPEED = 0.01;
   
   public Enemy2(){
-    image = GraphicsTools.makeImage("/Pics/enemy2.png");
+    super();
+    image = PictureFactory.enemy2_img;
+    super.obj_image = image;
     target = GamePanel.ship;
+    speed = 2;
+    theta = 0;
   }
   
-  
-  @Override
-  public void prepareNextFrame() {
-    if (exploding) {
-       if (tick < 0){
-         enemy_image = super.image;
-       } else{
-       enemy_image = explo_pics[tick];
-       }
-    } else {
-      GraphicsTools.flipOverGameObjPosition(this);
-      adjustDirectionToTarget();
-        x = x + (int) (direction.getX_dir() * speed);
-        y = y + (int) (direction.getY_dir() * speed);
-    }
-  }
+//  @Override
+//  public void prepareNextFrame() {
+//    if (exploding) {
+//       if (tick < 0){
+//         enemy_image = image;
+//       } else{
+//       enemy_image = explo_pics[tick];
+//       }
+//    } else {
+//      GraphicsTools.flipOverGameObjPosition(this);
+//      adjustDirectionToTarget();
+//        x = x + (int) (direction.getX_dir() * speed);
+//        y = y + (int) (direction.getY_dir() * speed);
+//    }
+//  }
 
   
   private void adjustDirectionToTarget() {
@@ -58,5 +63,10 @@ public class Enemy2 extends Enemy{
     }
   }
   
+  @Override 
+  public void objectSpecificMove(AbstrGameObject obj){
+    GraphicsTools.flipOverGameObjPosition(obj);
+    adjustDirectionToTarget();
+  }
   
 }

@@ -58,4 +58,11 @@ public class Laser extends AbstrGameObject{
   public void explode() {
     // TODO Auto-generated method stub
   }
+
+
+  @Override
+  protected void objectSpecificMove(AbstrGameObject obj) {
+    // TODO Auto-generated method stub
+    
+  }
 }

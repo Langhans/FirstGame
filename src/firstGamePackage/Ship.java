@@ -39,7 +39,7 @@ public class Ship extends AbstrGameObject {
   private Direction direction = new Direction(1, 0);
   private double theta = 0;
 
-  private Image ship_image = null;
+//  private Image obj_image = null;
   // step = unit for one move via key press!
   static int step = 50;
   // Vapen
@@ -60,7 +60,7 @@ public class Ship extends AbstrGameObject {
     super.height = 75;
 
     super.image = makeImage("/Pics/alienblaster.png");
-    ship_image = super.image;
+    obj_image = super.image;
     super.explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
   }
 
@@ -78,7 +78,7 @@ public class Ship extends AbstrGameObject {
 
     g2.translate(x + width / 2, y + height / 2);
     g2.rotate(theta);
-    g2.drawImage(ship_image, 0 - width / 2, 0 - height / 2, width, height,
+    g2.drawImage(obj_image, 0 - width / 2, 0 - height / 2, width, height,
         null);
     g2.rotate(-theta);
     g2.translate(-(x + width / 2), -(y + height / 2));
@@ -95,10 +95,10 @@ public class Ship extends AbstrGameObject {
       if (tick < 0) {
         exploding = false;
       } else {
-        ship_image = super.explo_pics[tick];
+        obj_image = explo_pics[tick];
       }
     } else {
-      ship_image = super.image;
+      obj_image = super.image;
     }
   }
 
@@ -248,5 +248,11 @@ public class Ship extends AbstrGameObject {
       }
       targetLock = null;
     }
+  }
+
+  @Override
+  protected void objectSpecificMove(AbstrGameObject obj) {
+    // TODO Auto-generated method stub
+    
   }
 }// End Class Ship

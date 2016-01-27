@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements ActionListener {
   protected Timer timer;
 
   protected Timer anim_timer;
-  public final static int ANIMATION_INTERVALL = 200;
+  public final static int ANIMATION_INTERVALL = 300;
   // Stars
   public final static int star_amount = 150;
   public final static int enemy_amount = 5;
@@ -100,7 +100,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     timer.start();
     anim_timer.start();
-    
+
     new EnemyMaker().start();
   }
 
@@ -120,11 +120,18 @@ public class GamePanel extends JPanel implements ActionListener {
       }
 
       for (Laser l : laser_array) {
-        if (GraphicsTools.isColliding(l, enemy)) {
-          
-          explo_array.add(enemy);
-          enemy.explode();
-          enemy_array.remove(enemy);
+        if (l instanceof EnemyLaser) {
+          if (GraphicsTools.isColliding(l, ship)) {
+            explo_array.add(ship);
+            ship.explode();
+          }
+        } else {
+          if (GraphicsTools.isColliding(l, enemy)) {
+
+            explo_array.add(enemy);
+            enemy.explode();
+            enemy_array.remove(enemy);
+          }
         }
       }
       enemy.prepareNextFrame();
@@ -143,19 +150,18 @@ public class GamePanel extends JPanel implements ActionListener {
       star.prepareNextFrame();
     }
 
-   AbstrGameObject obj;
-    
-    for (int i = 0 ; i < explo_array.size() ; i++){
-     obj = explo_array.get(i);
-     if( obj.tick > -1 )
-       obj.prepareNextFrame();
-     else 
-       explo_array.remove(i);
-       if (obj instanceof Rocket){
-         explo_array.remove(i);
-       }
+    AbstrGameObject obj;
+
+    for (int i = 0; i < explo_array.size(); i++) {
+      obj = explo_array.get(i);
+      if (obj.tick > -1)
+        obj.prepareNextFrame();
+      else
+        explo_array.remove(i);
+      if (obj instanceof Rocket) {
+        explo_array.remove(i);
+      }
     }
-    
     prepareRocketsNextFrame();
   }
 
@@ -166,10 +172,10 @@ public class GamePanel extends JPanel implements ActionListener {
       int xR = ship.rocket.getX();
       int yR = ship.rocket.getY();
 
-//      if (GraphicsTools.outOfPanel(ship.rocket)) {
-//        ship.rocket = null;
-//        return;
-//      }
+      // if (GraphicsTools.outOfPanel(ship.rocket)) {
+      // ship.rocket = null;
+      // return;
+      // }
       GraphicsTools.flipOverGameObjPosition(ship.rocket);
 
       if (GraphicsTools.isColliding(ship.rocket, target)) {
@@ -211,8 +217,8 @@ public class GamePanel extends JPanel implements ActionListener {
     if (ship.rocket != null) {
       ship.rocket.draw(g2);
     }
-    
-    for( AbstrGameObject obj : explo_array){
+
+    for (AbstrGameObject obj : explo_array) {
       obj.draw(g2);
     }
   }
@@ -244,8 +250,7 @@ public class GamePanel extends JPanel implements ActionListener {
     for (int i = 0; i < star_amount; i++)
       stars_array[i] = new Star();
   }
-  
-  
+
   private class AnimationListener implements ActionListener {
 
     @Override
@@ -255,25 +260,24 @@ public class GamePanel extends JPanel implements ActionListener {
       }
     }
   }
-  
-  
-  private class EnemyMaker extends Thread implements ActionListener{
+
+  private class EnemyMaker extends Thread implements ActionListener {
 
     private Timer timer;
-    
-    public EnemyMaker(){
-      timer = new Timer(2500 , this);
+
+    public EnemyMaker() {
+      timer = new Timer(2500, this);
       timer.start();
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
       // TODO Auto-generated method stub
-//      enemy_array.add(new Enemy2());
-//      enemy_array.add(new Enemy());
-      enemy_array.add(new Enemy3());
-      
-      
+//       enemy_array.add(new Enemy2());
+//       enemy_array.add(new Enemy());
+//      enemy_array.add(new Enemy3());
+      enemy_array.add(new BigEnemy());
+
     }
   }
 

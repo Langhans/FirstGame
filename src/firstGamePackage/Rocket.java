@@ -10,19 +10,8 @@ import javax.imageio.ImageIO;
 
 public class Rocket extends AbstrGameObject {
 
-//  private static final double ROCKET_ROT_SPEED = 0.2;
-  // Rockets state
-
-  private boolean exploding = false;
   private boolean fired = false;
-//  private final int speed = 10;
-
-//  private Image rocket_image;
   private AbstrGameObject target;
-
-//  private Direction direction;
-//  private double theta = 0;
-
 
   public Rocket(AbstrGameObject target) {
     height = 25;
@@ -35,30 +24,30 @@ public class Rocket extends AbstrGameObject {
     ROT_SPEED = 0.2;
   }
 
-  public Graphics2D draw(Graphics2D g2) {
-    
-    if (!exploding) {
-      g2.translate(x + width / 2, y + height / 2);
-      g2.rotate(theta);
-      g2.drawImage(obj_image,  - width / 2,  - height / 2, width , height,
-          null);
-      g2.rotate(-theta);
-      g2.translate(-(x + width / 2), -(y + height / 2));
-    } else {
+//  public Graphics2D draw(Graphics2D g2) {
+//    
+//    if (!exploding) {
+//      g2.translate(x + width / 2, y + height / 2);
+//      g2.rotate(theta);
+//      g2.drawImage(obj_image,  - width / 2,  - height / 2, width , height,
+//          null);
+//      g2.rotate(-theta);
+//      g2.translate(-(x + width / 2), -(y + height / 2));
+//    } else {
+//
+//      if (tick < 0) {
+//        obj_image = super.image;
+//      } else {
+//        obj_image = explo_pics[tick];
+//      }
+//    }
+//    return g2;
+//  }
 
-      if (tick < 0) {
-        obj_image = super.image;
-      } else {
-        obj_image = explo_pics[tick];
-      }
-    }
-    return g2;
-  }
-
-  public void initRocket(double theta, int x, int y) {
+  public void initRocket(double theta, int x_start, int y_start) {
     this.theta = theta;
-    super.x = x;
-    super.y = y;
+    x = x_start;
+    y = y_start;
     direction = GraphicsTools.getDirectionFromAngle(theta);
   }
 
@@ -70,31 +59,11 @@ public class Rocket extends AbstrGameObject {
   }
 
   private void adjustDirectionToTarget() {
-    double dx = target.x - x;
-    double dy = (target.y - y);
-    double hyp = Math.sqrt(dx * dx + dy * dy);
 
-    // when hyp is small, rocket has hit target!
-    if (hyp <= 0.01) {
+    direction = GraphicsTools.adjustDirectionToTarget( this , target);
+    
+    if( direction == null ){
       this.explode();
-      target.explode();
-    } else {
-      double sin = dy / hyp;
-      double cos = dx / hyp;
-      double newDir = Math.atan(sin/cos);
-      if (theta - newDir > ROT_SPEED){
-        newDir = theta - ROT_SPEED;
-      }else if (newDir - theta >ROT_SPEED){
-        newDir = theta + ROT_SPEED;
-      }
-
-      if (dx < 0) {
-        theta =  newDir ; 
-      } else {
-        theta = newDir;
-      }
-      direction.setX_dir(Math.cos(theta)); // cos(t)
-      direction.setY_dir(Math.sin(theta)); // sin(t)
     }
   }
 
@@ -122,5 +91,4 @@ public class Rocket extends AbstrGameObject {
   protected void objectSpecificMove(AbstrGameObject obj) {
     adjustDirectionToTarget();
   }
-
 }// End Class Rocket

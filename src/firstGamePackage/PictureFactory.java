@@ -10,6 +10,9 @@ public class PictureFactory {
   public static final Image enemy3_img = GraphicsTools.makeImage("/Pics/enemy3.png");
   public static final Image rocket_img = GraphicsTools.makeImage("/Pics/rocket.png");
   public static final Image laser_img = GraphicsTools.makeImage("/Pics/laser.png");
+  public static final Image laser2_img = GraphicsTools.makeImage("/Pics/laser2.png");
   public static final Image[] explo1_imgs = GraphicsTools.makeExploPics("/Pics/explosionPics");
+  public static final Image bigGunLaser1_img = GraphicsTools.makeImage("/Pics/biglaser1.jpeg");
+  public static final Image bigEnemy1_img = GraphicsTools.makeImage("/Pics/bigEnemy.png");
   
 }

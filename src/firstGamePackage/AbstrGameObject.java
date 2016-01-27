@@ -13,18 +13,26 @@ public abstract class AbstrGameObject {
   protected int width;
   protected int height;
   protected Image image;
-  protected boolean exploding = false;
-  protected int tick = 0;
-  protected Image[] explo_pics;
   protected Image obj_image;
+  protected boolean exploding = false;
+  protected Image[] explo_pics;
+  protected int tick = 0;
   protected Direction direction = new Direction(1 , 0);
-  protected int speed;
   protected double theta;
+  protected int speed;
   protected double ROT_SPEED;
   
-  public abstract Graphics2D draw(Graphics2D g2);
+  protected Graphics2D draw(Graphics2D g2){
+    g2.translate(x + width / 2, y + height / 2);
+    g2.rotate(theta);
+    g2.drawImage(obj_image,  - width / 2,  - height / 2, width , height,
+        null);
+    g2.rotate(-theta);
+    g2.translate(-(x + width / 2), -(y + height / 2));
+    return g2;
+  }
 
-  public  void prepareNextFrame(){
+  protected  void prepareNextFrame(){
     if (exploding) {
       if (tick < 0){
         obj_image = image;
@@ -42,7 +50,7 @@ public abstract class AbstrGameObject {
   protected abstract void objectSpecificMove(AbstrGameObject obj); 
   
   // has to be overriden with animation code
-  public void animationTick() {
+  protected void animationTick() {
     if (tick < 0) {
       exploding = false;
       tick = -1;
@@ -52,10 +60,8 @@ public abstract class AbstrGameObject {
     }
   }
   
-  public void explode(){
+  protected void explode(){
     tick = explo_pics.length - 1; // count of explosion frames
     exploding = true;
   }
-
-  
 }

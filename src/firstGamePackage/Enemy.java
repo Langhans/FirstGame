@@ -17,7 +17,7 @@ public class Enemy extends AbstrGameObject {
     y = (int) (GamePanel.y_max * Math.random());
     width = 50;
     height = 50;
-    explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
+    explo_pics = PictureFactory.explo1_imgs;
     speed = 4;
     theta = 0;
   }
@@ -29,12 +29,15 @@ public class Enemy extends AbstrGameObject {
  
   @Override
   public Graphics2D draw(Graphics2D g2) {
+   super.draw(g2);
+    
     if (targetLocked){
       g2.setColor(Color.RED);
-      g2.setStroke(new BasicStroke(3));
+      g2.setStroke(new BasicStroke(2));
       g2.drawRect(x, y , width, height);
     }
-    g2.drawImage(obj_image, x, y, width, height, null);
+    // would draw a second ship_image not rotation! nice effekt!
+//    g2.drawImage(obj_image, x, y, width, height, null);
     return g2;
   }
 
@@ -49,6 +52,6 @@ public class Enemy extends AbstrGameObject {
   @Override
   protected void objectSpecificMove(AbstrGameObject obj) {
     GraphicsTools.flipOverGameObjPosition(obj);
+    
   }
-
 }// End of class Enemy

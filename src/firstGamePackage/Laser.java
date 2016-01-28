@@ -1,10 +1,5 @@
 package firstGamePackage;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-
-import javax.imageio.ImageIO;
-
 public class Laser extends AbstrGameObject{
   
   
@@ -17,7 +12,7 @@ public class Laser extends AbstrGameObject{
       obj_image = image; 
       width = image.getWidth(null) ;
       height = image.getHeight(null);
-      speed = 50;
+      speed = GamePanel.getSpeedFactor(25) ;
       }
   
 

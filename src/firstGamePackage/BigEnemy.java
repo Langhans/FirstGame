@@ -19,10 +19,10 @@ public class BigEnemy extends Enemy implements ActionListener{
     image = PictureFactory.bigEnemy1_img;
     obj_image = image;
     target = GamePanel.ship;
-    speed = 1;
+    speed = GamePanel.getSpeedFactor(1) ;
     theta = 0;
     ROT_SPEED = 0d;
-    timer = new Timer(4000 , this);
+    timer = new Timer(2000 , this);
     timer.start();
   }
   

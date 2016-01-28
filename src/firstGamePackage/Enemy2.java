@@ -12,7 +12,7 @@ public class Enemy2 extends Enemy{
     image = PictureFactory.enemy2_img;
     obj_image = image;
     target = GamePanel.ship;
-    speed = 3;
+    speed = GamePanel.getSpeedFactor(3);
     theta = 0;
     ROT_SPEED = 0.01;
   }

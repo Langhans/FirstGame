@@ -20,7 +20,7 @@ public class Rocket extends AbstrGameObject {
     explo_pics = PictureFactory.explo1_imgs;
     obj_image = image;
     this.target = target;
-    speed = 10;
+    speed = GamePanel.getSpeedFactor(7) ;
     ROT_SPEED = 0.2;
   }
 

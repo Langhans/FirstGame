@@ -18,7 +18,7 @@ public class Enemy extends AbstrGameObject {
     width = 50;
     height = 50;
     explo_pics = PictureFactory.explo1_imgs;
-    speed = 4;
+    speed = GamePanel.getSpeedFactor(4) ;
     theta = 0;
   }
   

@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 
-public class GameWindow extends JFrame{
+public class GameWindow extends JFrame {
   
   private static final GameWindow window = new GameWindow();
   

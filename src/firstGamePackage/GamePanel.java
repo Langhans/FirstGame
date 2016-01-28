@@ -11,6 +11,7 @@ import java.awt.RenderingHints.Key;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -34,7 +35,7 @@ import javax.swing.Timer;
 
 import java.awt.event.ActionListener;
 
-public class GamePanel extends JPanel implements ActionListener {
+public class GamePanel extends JPanel implements ActionListener , ComponentListener{
 
   /**
    * 
@@ -42,14 +43,15 @@ public class GamePanel extends JPanel implements ActionListener {
   private static final long serialVersionUID = 1L;
 
   // Paneldimension, default 800x600
+  public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
   public static Dimension panelSize = new Dimension(800, 600);
-  public static int x_max = panelSize.width;
-  public static int y_max = panelSize.height;
+  public static int x_max = screenSize.width;
+  public static int y_max = screenSize.height;
 
   // Frames, speed,
-  public static int FRAME_INTERVALL = 10;
+  public static int FRAME_INTERVALL = 30;
   public static boolean running = true;
-  public static int SPEED = 2;
+  public static int SPEED = 8;
 
   static int t = 10;
   protected Timer timer;
@@ -57,7 +59,7 @@ public class GamePanel extends JPanel implements ActionListener {
   protected Timer anim_timer;
   public final static int ANIMATION_INTERVALL = 300;
   // Stars
-  public final static int star_amount = 150;
+  public final static int star_amount = 70;
   public final static int enemy_amount = 5;
   public final static Star[] stars_array = new Star[star_amount];
   public final static List<Enemy> enemy_array = new ArrayList<>();
@@ -76,7 +78,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
   // KONSTRUKTOR
   public GamePanel() {
-
+    addComponentListener(this);
     this.setBackground(Color.BLACK);
     timer = new Timer(FRAME_INTERVALL, this);
     g = this.getGraphics();
@@ -95,10 +97,8 @@ public class GamePanel extends JPanel implements ActionListener {
 
     this.setFocusable(true);
     this.requestFocusInWindow(true);
-
     animationListener = new AnimationListener();
     anim_timer = new Timer(ANIMATION_INTERVALL, animationListener);
-
     timer.start();
     anim_timer.start();
 
@@ -112,7 +112,6 @@ public class GamePanel extends JPanel implements ActionListener {
     checkRocketForCollisionAndPrepareNextFrame();
         
     ship.prepareNextFrame();
-    
     
     for (Laser l : laser_array) {
       l.prepareNextFrame();
@@ -134,6 +133,10 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     // refresh explosion array
+    prepareExplosions();
+  }
+
+  private void prepareExplosions() {
     AbstrGameObject obj;
 
     for (int i = 0; i < explo_array.size(); i++) {
@@ -219,17 +222,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
   }
 
-  private void drawEnemyImage(Graphics2D g2) {
-    for (Enemy enemy : enemy_array) {
-      enemy.draw(g2);
-    }
-    
-    for (Laser l : enemy_laser_array){
-      l.draw(g2);
-    }
-  }
-
-  private void drawBackImage(Graphics2D g2) {
+  private void drawImages(Graphics2D g2) {
 
     // TODO move to info-bar in different GUI panel
     g2.setColor(Color.RED);
@@ -249,6 +242,14 @@ public class GamePanel extends JPanel implements ActionListener {
     if (ship.rocket != null) {
       ship.rocket.draw(g2);
     }
+    
+    for (Enemy enemy : enemy_array) {
+      enemy.draw(g2);
+    }
+    
+    for (Laser l : enemy_laser_array){
+      l.draw(g2);
+    }
 
     for (AbstrGameObject obj : explo_array) {
       obj.draw(g2);
@@ -261,8 +262,7 @@ public class GamePanel extends JPanel implements ActionListener {
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
     // draw till buffered Images!?
-    drawBackImage(g2);
-    drawEnemyImage(g2);
+    drawImages(g2);
   }
 
   @Override
@@ -273,12 +273,13 @@ public class GamePanel extends JPanel implements ActionListener {
   }
 
   private void makeEnemies() {
+   
     if (TESTMODE) {
+      
       for (int i = 0; i < enemy_amount; i++) {
         enemy_array.add(new Enemy());
       }
-
-      enemy_array.add(new BigEnemy());
+//      enemy_array.add(new BigEnemy());
       enemy_array.add(new Enemy2());
       enemy_array.add(new Enemy());
       enemy_array.add(new Enemy3());
@@ -305,24 +306,41 @@ public class GamePanel extends JPanel implements ActionListener {
     private Timer timer;
 
     public EnemyMaker() {
-      timer = new Timer(2500, this);
+      timer = new Timer(4500, this);
       timer.start();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
       // TODO Auto-generated method stub
+      if (enemy_array.size() < enemy_amount){
       enemy_array.add(new Enemy2());
       enemy_array.add(new Enemy());
       enemy_array.add(new Enemy3());
-
+//      enemy_array.add(new BigEnemy());
+      }
     }
   }
 
-  // windowlistener -> resize panelsize, maxX och Y för att anpassa vid ändrat
-  // window!!!
+  @Override
+  public void componentResized(ComponentEvent e) {
+    x_max = e.getComponent().getWidth();
+    y_max = e.getComponent().getHeight();
+  }
 
-  // Functions som test om enemy,is hit by rocket or ship hit by enemy -> inled
-  // explosioner, reset, etc.
+  @Override
+  public void componentMoved(ComponentEvent e) {
+  }
 
+  @Override
+  public void componentShown(ComponentEvent e) {
+  }
+
+  @Override
+  public void componentHidden(ComponentEvent e) {
+  }
+
+  public static int getSpeedFactor(int factor) {
+    return factor * 1000 / GamePanel.ANIMATION_INTERVALL;
+  }
 }

@@ -10,11 +10,10 @@ public class Enemy3 extends Enemy {
     image = PictureFactory.enemy3_img;
     obj_image = image;
     target = GamePanel.ship;
-    speed = 2;
+    speed = GamePanel.getSpeedFactor(2);
     theta = 0;
     ROT_SPEED = 0.01;
   }
-  
 
   private void adjustDirectionToTarget() {
     direction = GraphicsTools.adjustDirectionToTarget(this, target);

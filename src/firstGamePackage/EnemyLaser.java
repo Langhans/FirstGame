@@ -10,6 +10,6 @@ public class EnemyLaser extends Laser {
     obj_image = image;
     width /= 3;
     height /= 3;
-    speed = 20;
+    speed = GamePanel.getSpeedFactor(20) ;
   }
 }

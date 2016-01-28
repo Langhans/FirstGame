@@ -30,76 +30,48 @@ public class Ship extends AbstrGameObject {
 
   private static final double ROT_UNIT = 0.35d;
 
-  static int x_start = 30;
-  static int y_start;
-
+//  static int x_start = 30;
+//  static int y_start;
+//
   private int x_target;
-
   private int y_target;
-  private Direction direction = new Direction(1, 0);
-  private double theta = 0;
-
-//  private Image obj_image = null;
-  // step = unit for one move via key press!
-  static int step = 50;
+  static int step = 75;
   // Vapen
   protected Rocket rocket = null;
   protected int rocket_count;
   protected boolean aimMode = false;
   protected RocketTargetLock targetLock = null;
 
+  private int MOVE_SPEED = GamePanel.getSpeedFactor(3);
+
   public Ship() {
     rocket_count = 1000;
     // Startposition for spaceship
-    super.x = GamePanel.x_max / 2;
-    super.y = GamePanel.y_max / 2;
-    x_target = super.x;
-    y_target = super.y;
-
-    super.width = 75;
-    super.height = 75;
-
-    super.image = makeImage("/Pics/alienblaster.png");
-    obj_image = super.image;
-    super.explo_pics = GraphicsTools.makeExploPics("/Pics/explosionPics");
+    x = GamePanel.x_max / 2;
+    y = GamePanel.y_max / 2;
+    x_target = x;
+    y_target = y;
+    theta = 0;
+    width = 75;
+    height = 75;
+    speed = 0 ;
+    image = PictureFactory.ship_img;
+    obj_image = image;
+    explo_pics = PictureFactory.explo1_imgs;
   }
 
-  public void setX_target(int x_target) {
-    this.x_target = x_target;
+  public void setX_target(int x_t) {
+    x_target = x_t;
   }
 
-  public void setY_target(int y_target) {
-    this.y_target = y_target;
-  }
-
-  // returns a Graphics2D Object to draw the Ship
-  @Override
-  public Graphics2D draw(Graphics2D g2) {
-
-    g2.translate(x + width / 2, y + height / 2);
-    g2.rotate(theta);
-    g2.drawImage(obj_image, 0 - width / 2, 0 - height / 2, width, height,
-        null);
-    g2.rotate(-theta);
-    g2.translate(-(x + width / 2), -(y + height / 2));
-    return g2;
+  public void setY_target(int y_t) {
+    y_target = y_t;
   }
 
   @Override
   public void prepareNextFrame() {
-
     adjustTargetXandY();
-
-    if (exploding) {
-
-      if (tick < 0) {
-        exploding = false;
-      } else {
-        obj_image = explo_pics[tick];
-      }
-    } else {
-      obj_image = super.image;
-    }
+    super.prepareNextFrame();
   }
 
   public int getX() {
@@ -145,12 +117,12 @@ public class Ship extends AbstrGameObject {
 
   public void rotateRight() {
     crankRight();
-    calcNewDirectionFromTetha();
+    direction = GraphicsTools.getDirectionFromAngle(theta);
   }
 
   public void rotateLeft() {
     crankLeft();
-    calcNewDirectionFromTetha();
+    direction = GraphicsTools.getDirectionFromAngle(theta);
   }
 
   public void fireLaser() {
@@ -176,22 +148,16 @@ public class Ship extends AbstrGameObject {
   private void adjustTargetXandY() {
 
     if (x > x_target) {
-      x -= 2;
-    } else if (x < x_target) {
-      x += 2;
+      x -= MOVE_SPEED ;
+    } else if (x <= x_target) {
+      x += MOVE_SPEED;
     }
 
     if (y > y_target) {
-      y -= 2;
-    } else if (y < y_target) {
-      y += 2;
+      y -= MOVE_SPEED;
+    } else if (y <= y_target) {
+      y += MOVE_SPEED;
     }
-  }
-
-  // calculate new direction from changed angle of ship
-  private void calcNewDirectionFromTetha() {
-    direction.setX_dir(Math.cos(theta));
-    direction.setY_dir(Math.sin(theta));
   }
 
   // change angle of ship (less angle)
@@ -252,7 +218,5 @@ public class Ship extends AbstrGameObject {
 
   @Override
   protected void objectSpecificMove(AbstrGameObject obj) {
-    // TODO Auto-generated method stub
-    
   }
 }// End Class Ship

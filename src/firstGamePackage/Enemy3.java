@@ -40,7 +40,7 @@ public class Enemy3 extends Enemy {
 
   private void fireLaser() {
     if (laserLoaded) {
-      GamePanel.laser_array.add(new EnemyLaser(x, y, new Direction(1, 0), 0));
+      GamePanel.enemy_laser_array.add(new EnemyLaser(x, y, new Direction(1, 0), 0));
       laserLoaded = false;
     }
   }

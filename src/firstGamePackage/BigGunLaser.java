@@ -7,8 +7,8 @@ public class BigGunLaser extends EnemyLaser {
     
     super(x_start, y_start,
         GraphicsTools.getDirectionFromAngle(theta_start), theta_start );
-    width *= 2;
-    height *=2;
+    width  *= 3;
+    height *= 3;
     
     image = PictureFactory.bigGunLaser1_img;
     obj_image = image;

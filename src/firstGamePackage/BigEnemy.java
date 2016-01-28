@@ -14,15 +14,15 @@ public class BigEnemy extends Enemy implements ActionListener{
     super();
     y = 50;
     x = 50;
-    width = 100;
-    height = 100;
+    width = 150;
+    height = 150;
     image = PictureFactory.bigEnemy1_img;
     obj_image = image;
     target = GamePanel.ship;
-    speed = 2;
+    speed = 1;
     theta = 0;
     ROT_SPEED = 0d;
-    timer = new Timer(5000 , this);
+    timer = new Timer(4000 , this);
     timer.start();
   }
   
@@ -46,8 +46,8 @@ public class BigEnemy extends Enemy implements ActionListener{
   }
 
   private void fireBigGun() {
-    for (int i = 0 ; i < 5 ; i++){
-      GamePanel.laser_array.add(new BigGunLaser(x,y, direction , theta + i) );
+    for (int i = 0 ; i < 10 ; i++){
+      GamePanel.enemy_laser_array.add(new BigGunLaser(x,y, direction , theta + i) );
     }
   }
 

@@ -24,25 +24,7 @@ public class Rocket extends AbstrGameObject {
     ROT_SPEED = 0.2;
   }
 
-//  public Graphics2D draw(Graphics2D g2) {
-//    
-//    if (!exploding) {
-//      g2.translate(x + width / 2, y + height / 2);
-//      g2.rotate(theta);
-//      g2.drawImage(obj_image,  - width / 2,  - height / 2, width , height,
-//          null);
-//      g2.rotate(-theta);
-//      g2.translate(-(x + width / 2), -(y + height / 2));
-//    } else {
 //
-//      if (tick < 0) {
-//        obj_image = super.image;
-//      } else {
-//        obj_image = explo_pics[tick];
-//      }
-//    }
-//    return g2;
-//  }
 
   public void initRocket(double theta, int x_start, int y_start) {
     this.theta = theta;
@@ -89,6 +71,7 @@ public class Rocket extends AbstrGameObject {
 
   @Override
   protected void objectSpecificMove(AbstrGameObject obj) {
+    GraphicsTools.flipOverGameObjPosition(obj);
     adjustDirectionToTarget();
   }
 }// End Class Rocket

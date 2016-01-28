@@ -62,6 +62,7 @@ public class GamePanel extends JPanel implements ActionListener {
   public final static Star[] stars_array = new Star[star_amount];
   public final static List<Enemy> enemy_array = new ArrayList<>();
   public final static List<Laser> laser_array = new ArrayList<>();
+  public final static List<Laser> enemy_laser_array = new ArrayList<>();
   public final static List<AbstrGameObject> explo_array = new ArrayList<>();
 
   public static final boolean TESTMODE = true;
@@ -106,6 +107,47 @@ public class GamePanel extends JPanel implements ActionListener {
 
   public void prepareAllForNextFrame() {
 
+    checkEnemyForCollisions();
+    checkShipForCollision();
+    checkRocketForCollisionAndPrepareNextFrame();
+        
+    ship.prepareNextFrame();
+    
+    
+    for (Laser l : laser_array) {
+      l.prepareNextFrame();
+    }
+    
+    for (Enemy e: enemy_array){
+      e.prepareNextFrame();
+    }
+    
+    for( Laser el : enemy_laser_array){
+      el.prepareNextFrame();
+    }
+
+    // change Star direction!
+    Star.setStarDirection(ship.getDirection());
+
+    for (Star star : stars_array) {
+      star.prepareNextFrame();
+    }
+
+    // refresh explosion array
+    AbstrGameObject obj;
+
+    for (int i = 0; i < explo_array.size(); i++) {
+      obj = explo_array.get(i);
+
+      if (obj.tick > -1) {
+        obj.prepareNextFrame();
+      } else {
+        explo_array.remove(i);
+      }
+    }
+  }
+
+  private void checkEnemyForCollisions() {
     Enemy enemy;
 
     for (int i = 0; i < enemy_array.size(); i++) {
@@ -119,64 +161,50 @@ public class GamePanel extends JPanel implements ActionListener {
         enemy_array.remove(enemy);
       }
 
-      for (Laser l : laser_array) {
-        if (l instanceof EnemyLaser) {
-          if (GraphicsTools.isColliding(l, ship)) {
-            explo_array.add(ship);
-            ship.explode();
-          }
-        } else {
-          if (GraphicsTools.isColliding(l, enemy)) {
+      Laser l;
 
+      for (int j = 0; j < laser_array.size(); j++) {
+        l = laser_array.get(j);
+
+        if (GraphicsTools.outOfPanel(l)) {
+          laser_array.remove(j);
+          continue;
+        } else {
+
+          if (GraphicsTools.isColliding(l, enemy)) {
             explo_array.add(enemy);
             enemy.explode();
             enemy_array.remove(enemy);
           }
         }
       }
-      enemy.prepareNextFrame();
     }
-
-    ship.prepareNextFrame();
-
-    for (Laser l : laser_array) {
-      l.prepareNextFrame();
-    }
-
-    // change Star direction!
-    Star.setStarDirection(ship.getDirection());
-
-    for (Star star : stars_array) {
-      star.prepareNextFrame();
-    }
-
-    AbstrGameObject obj;
-
-    for (int i = 0; i < explo_array.size(); i++) {
-      obj = explo_array.get(i);
-      if (obj.tick > -1)
-        obj.prepareNextFrame();
-      else
-        explo_array.remove(i);
-      if (obj instanceof Rocket) {
-        explo_array.remove(i);
-      }
-    }
-    prepareRocketsNextFrame();
   }
 
-  private void prepareRocketsNextFrame() {
+  private void checkShipForCollision() {
+    Laser eLaser;
+
+    for (int i = 0; i < enemy_laser_array.size(); i++) {
+
+      eLaser = enemy_laser_array.get(i);
+
+      if (GraphicsTools.outOfPanel(eLaser)) {
+        enemy_laser_array.remove(i);
+      } else {
+        if (GraphicsTools.isColliding(eLaser, ship)) {
+          enemy_laser_array.remove(i);
+          explo_array.add(ship);
+          ship.explode();
+        }
+      }
+    }
+
+  }
+
+  private void checkRocketForCollisionAndPrepareNextFrame() {
     if (ship.rocket != null && ship.rocket.isFired()) {
 
       final AbstrGameObject target = ship.rocket.getTarget();
-      int xR = ship.rocket.getX();
-      int yR = ship.rocket.getY();
-
-      // if (GraphicsTools.outOfPanel(ship.rocket)) {
-      // ship.rocket = null;
-      // return;
-      // }
-      GraphicsTools.flipOverGameObjPosition(ship.rocket);
 
       if (GraphicsTools.isColliding(ship.rocket, target)) {
         explo_array.add(target);
@@ -194,6 +222,10 @@ public class GamePanel extends JPanel implements ActionListener {
   private void drawEnemyImage(Graphics2D g2) {
     for (Enemy enemy : enemy_array) {
       enemy.draw(g2);
+    }
+    
+    for (Laser l : enemy_laser_array){
+      l.draw(g2);
     }
   }
 
@@ -241,8 +273,15 @@ public class GamePanel extends JPanel implements ActionListener {
   }
 
   private void makeEnemies() {
-    for (int i = 0; i < enemy_amount; i++) {
+    if (TESTMODE) {
+      for (int i = 0; i < enemy_amount; i++) {
+        enemy_array.add(new Enemy());
+      }
+
+      enemy_array.add(new BigEnemy());
+      enemy_array.add(new Enemy2());
       enemy_array.add(new Enemy());
+      enemy_array.add(new Enemy3());
     }
   }
 
@@ -273,10 +312,9 @@ public class GamePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       // TODO Auto-generated method stub
-//       enemy_array.add(new Enemy2());
-//       enemy_array.add(new Enemy());
-//      enemy_array.add(new Enemy3());
-      enemy_array.add(new BigEnemy());
+      enemy_array.add(new Enemy2());
+      enemy_array.add(new Enemy());
+      enemy_array.add(new Enemy3());
 
     }
   }

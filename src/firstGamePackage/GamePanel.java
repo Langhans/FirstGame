@@ -67,7 +67,7 @@ public class GamePanel extends JPanel implements ActionListener , ComponentListe
   public final static List<Laser> enemy_laser_array = new ArrayList<>();
   public final static List<AbstrGameObject> explo_array = new ArrayList<>();
 
-  public static final boolean TESTMODE = true;
+  public static final boolean TESTMODE = false;
 
   private static AnimationListener animationListener;
 

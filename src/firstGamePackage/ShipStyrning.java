@@ -40,7 +40,7 @@ public class ShipStyrning
       ship.rotateLeft();
     } else if (key == KeyEvent.VK_E) {
       ship.rotateRight();
-    } else if (key == KeyEvent.VK_W) {
+    } else if (key == KeyEvent.VK_W || key == KeyEvent.VK_SHIFT ) {
       ship.fireLaser();
     } else if (key == KeyEvent.VK_SPACE) {
       toggleAimMode();

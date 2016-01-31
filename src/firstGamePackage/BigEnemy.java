@@ -8,7 +8,7 @@ import javax.swing.Timer;
 public class BigEnemy extends Enemy implements ActionListener{
 
   private static AbstrGameObject target;
-  private Timer timer;
+  private Timer fireLaserTimer;
   
   public BigEnemy(){
     super();
@@ -22,8 +22,8 @@ public class BigEnemy extends Enemy implements ActionListener{
     speed = GamePanel.getSpeedFactor(1) ;
     theta = 0;
     ROT_SPEED = 0d;
-    timer = new Timer(2000 , this);
-    timer.start();
+    fireLaserTimer = new Timer(2000 , this);
+//    fireLaserTimer.start();
   }
   
   protected void adjustDirectionToTarget() {
@@ -38,16 +38,19 @@ public class BigEnemy extends Enemy implements ActionListener{
   @Override 
   protected void objectSpecificMove(AbstrGameObject obj){
     adjustDirectionToTarget();
-    
     // stays NORTH!
     if (y > GamePanel.y_max / 4){
       y = GamePanel.y_max / 4;
     }
+    GraphicsTools.checkBounds(this);
+    
+    if (Math.abs(GamePanel.ship.y - y) < 20)
+      fireBigGun();
   }
 
   private void fireBigGun() {
     for (int i = 0 ; i < 10 ; i++){
-      GamePanel.enemy_laser_array.add(new BigGunLaser(x,y, direction , theta + i) );
+      GamePanel.enemy_laser_array.add(new BigGunLaser(x,y , theta + i) );
     }
   }
 
@@ -55,6 +58,4 @@ public class BigEnemy extends Enemy implements ActionListener{
   public void actionPerformed(ActionEvent e) {
     fireBigGun();
   }
-  
-  
 }

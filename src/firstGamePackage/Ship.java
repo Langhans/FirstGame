@@ -46,7 +46,6 @@ public class Ship extends AbstrGameObject {
 
   public Ship() {
     rocket_count = 1000;
-    // Startposition for spaceship
     x = GamePanel.x_max / 2;
     y = GamePanel.y_max / 2;
     x_target = x;
@@ -82,12 +81,12 @@ public class Ship extends AbstrGameObject {
     return y;
   }
 
-  // return rocket- count
   public int getRocketCount() {
     return rocket_count;
   }
 
   // MOVE SHIP
+  
   public void moveUp() {
 
     if (y_target <= step)
@@ -127,7 +126,7 @@ public class Ship extends AbstrGameObject {
 
   public void fireLaser() {
     GamePanel.laser_array.add(new Laser(getWeaponStartX(), getWeaponStartY(),
-        new Direction(direction.getX_dir(), direction.getY_dir()), theta));
+         theta));
   }
 
   public void fireRocket() {

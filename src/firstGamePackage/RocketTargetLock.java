@@ -38,10 +38,8 @@ public class RocketTargetLock extends Thread {
         if (r.contains(new Point(mouse_x, mouse_y))) {
           this.target = enemy;
           enemy.setTargetLocked();
-
         }
       }
-
     }
   }
 }

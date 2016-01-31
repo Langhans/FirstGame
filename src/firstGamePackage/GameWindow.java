@@ -18,9 +18,10 @@ import javax.swing.JToolBar;
 public class GameWindow extends JFrame {
   
   private static final GameWindow window = new GameWindow();
+  private final GamePanel gamePanel;
   
   private GameWindow(){
-  GamePanel gamePanel = new GamePanel();
+  gamePanel = new GamePanel();
   Toolkit toolkit = Toolkit.getDefaultToolkit();
   Dimension screensize = toolkit.getScreenSize();
   

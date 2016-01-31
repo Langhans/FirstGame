@@ -1,18 +1,10 @@
 package firstGamePackage;
 
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints.Key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
-import javax.swing.SwingUtilities;
-
-import javafx.scene.Cursor;
 
 public class ShipStyrning
     implements KeyListener, MouseListener, MouseMotionListener {

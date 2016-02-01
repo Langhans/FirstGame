@@ -42,7 +42,7 @@ public class Ship extends AbstrGameObject {
   protected boolean aimMode = false;
   protected RocketTargetLock targetLock = null;
 
-  private int MOVE_SPEED = GamePanel.getSpeedFactor(3);
+  private int MOVE_SPEED = GamePanel.getSpeedFactor(2);
 
   public Ship() {
     rocket_count = 1000;
@@ -125,8 +125,8 @@ public class Ship extends AbstrGameObject {
   }
 
   public void fireLaser() {
-    GamePanel.laser_array.add(new Laser(getWeaponStartX(), getWeaponStartY(),
-         theta));
+    GamePanel.laser_array.add(
+        new Laser(getWeaponStartX(), getWeaponStartY(), theta));
   }
 
   public void fireRocket() {
@@ -145,17 +145,29 @@ public class Ship extends AbstrGameObject {
 
   // adjusting per frame for smooth motion
   private void adjustTargetXandY() {
-
-    if (x > x_target) {
-      x -= MOVE_SPEED ;
-    } else if (x <= x_target) {
-      x += MOVE_SPEED;
-    }
-
-    if (y > y_target) {
+    adjustTargetX();
+    adjustTargetY();
+  }
+  
+  private void adjustTargetY() {
+    
+    if (Math.abs(y - y_target) < MOVE_SPEED){
+      return;
+    } else if (y > y_target ) {
       y -= MOVE_SPEED;
-    } else if (y <= y_target) {
+    } else if (y < y_target) {
       y += MOVE_SPEED;
+    } 
+  }
+
+  private void adjustTargetX() {
+    
+    if (Math.abs(x - x_target) < MOVE_SPEED){
+      return;
+    } else if (x > x_target ) {
+      x -= MOVE_SPEED ;
+    } else if (x < x_target) {
+      x += MOVE_SPEED;
     }
   }
 

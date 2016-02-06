@@ -87,9 +87,7 @@ public class ShipStyrning
     x_curs =  e.getX() - ship.width/2;
     y_curs = e.getY() - ship.height/2;
     
-    if (ship.aimMode) {
-      ;
-    } else {
+    if (!ship.aimMode) {
       ship.setX_target(x_curs);
       ship.setY_target(y_curs);
     }

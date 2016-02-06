@@ -38,9 +38,8 @@ public class GamePanel extends JPanel
   public static boolean running = true;
   public static int SPEED = 8;
   private static AnimationListener animationListener;
-
-  // static int t = 10;
   public final static int ANIMATION_INTERVALL = 300;
+  public static int Animation_tick = 0;
   // Stars
   public final static int star_amount = 70;
   public final static int enemy_amount = 5;
@@ -100,13 +99,13 @@ public class GamePanel extends JPanel
     }
 
     EnemyLaser el;
-    
-    for (int i = 0 ; i < enemy_laser_array.size() ; i++) {
+
+    for (int i = 0; i < enemy_laser_array.size(); i++) {
       el = enemy_laser_array.get(i);
-      
-      if ( GraphicsTools.outOfPanel(el)){
+
+      if (GraphicsTools.outOfPanel(el)) {
         enemy_laser_array.remove(i);
-      } else{
+      } else {
         el.prepareNextFrame();
       }
     }
@@ -164,6 +163,7 @@ public class GamePanel extends JPanel
             explo_array.add(enemy);
             enemy.explode();
             enemy_array.remove(enemy);
+            laser_array.remove(j);
           }
         }
       }
@@ -175,10 +175,11 @@ public class GamePanel extends JPanel
 
     for (int i = 0; i < enemy_laser_array.size(); i++) {
       eLaser = enemy_laser_array.get(i);
-     
-        if (GraphicsTools.isColliding(eLaser, ship)) {
-          explo_array.add(ship);
-          ship.explode();
+
+      if (GraphicsTools.isColliding(eLaser, ship)) {
+        explo_array.add(ship);
+        enemy_laser_array.remove(i);
+        ship.explode();
       }
     }
   }
@@ -254,12 +255,12 @@ public class GamePanel extends JPanel
     if (!TESTMODE) {
 
       for (int i = 0; i < enemy_amount; i++) {
-        enemy_array.add(new Enemy());
+        enemy_array.add(new Enemy3());
+        enemy_array.add(new Enemy3());
       }
       enemy_array.add(new BigEnemy());
       enemy_array.add(new Enemy2());
       enemy_array.add(new Enemy());
-      enemy_array.add(new Enemy3());
     }
   }
 
@@ -272,6 +273,13 @@ public class GamePanel extends JPanel
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+      if (Animation_tick < Integer.MAX_VALUE - 1000) {
+        Animation_tick++;
+      } else {
+        Animation_tick = 0;
+      }
+
       for (int i = 0; i < explo_array.size(); i++) {
         explo_array.get(i).animationTick();
       }
@@ -289,11 +297,13 @@ public class GamePanel extends JPanel
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (enemy_array.size() < enemy_amount) {
-        enemy_array.add(new Enemy2());
-        enemy_array.add(new Enemy());
-        enemy_array.add(new Enemy3());
-        enemy_array.add(new BigEnemy());
+      if (TESTMODE) {
+        if (enemy_array.size() < enemy_amount) {
+          enemy_array.add(new Enemy2());
+          enemy_array.add(new Enemy());
+          enemy_array.add(new Enemy3());
+          enemy_array.add(new BigEnemy());
+        }
       }
     }
   }
@@ -317,6 +327,6 @@ public class GamePanel extends JPanel
   }
 
   public static int getSpeedFactor(int factor) {
-    return factor * 1000 / GamePanel.ANIMATION_INTERVALL;
+    return factor * 1000 / ANIMATION_INTERVALL;
   }
 }

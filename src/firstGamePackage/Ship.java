@@ -1,48 +1,23 @@
 package firstGamePackage;
 
-import static firstGamePackage.GraphicsTools.makeImage;
-
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-import javax.swing.Timer;
-
 public class Ship extends AbstrGameObject {
 
   /**
-   * Ship is the center of coordinate system in this game. Ships direction is
-   * virtual motion of the ship in regards to the stars which move in the
-   * opposite direction. This creates an illusion of motion. The Direction is
-   * based on a rotation around the center of the Ship, by an angle tetha. Theta
-   * is used to calculate changes in the Direction using standard angle
-   * functions (sine and cosine) on a unit-circle.
-   * 
    * @author Tim Langhans, YRGO.se
    */
 
   private static final double ROT_UNIT = 0.35d;
-
-//  static int x_start = 30;
-//  static int y_start;
-//
   private int x_target;
   private int y_target;
   static int step = 75;
-  // Vapen
+  // weapons
   protected Rocket rocket = null;
   protected int rocket_count;
   protected boolean aimMode = false;
   protected RocketTargetLock targetLock = null;
-
   private int MOVE_SPEED = GamePanel.getSpeedFactor(2);
+  
+  
 
   public Ship() {
     rocket_count = 1000;

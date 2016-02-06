@@ -14,5 +14,5 @@ public class PictureFactory {
   public static final Image[] explo1_imgs = GraphicsTools.makeExploPics("/Pics/explosionPics");
   public static final Image bigGunLaser1_img = GraphicsTools.makeImage("/Pics/biglaser1.png");
   public static final Image bigEnemy1_img = GraphicsTools.makeImage("/Pics/bigEnemy.png");
-  
+  public static final Image shield_img = GraphicsTools.makeImage("/Pics/shield.png");
 }

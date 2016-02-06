@@ -2,17 +2,13 @@ package firstGamePackage;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Star {
 
-  int x;
-  int y;
-  int start_x;
-  int start_y;
-  int size_width = 1; // between 1 and 3 px
-  int size_height = 1;
+  private int x;
+  private int y;
+  private int size_width = 1; // between 1 and 3 px
+  private int size_height = 1;
   private static Direction direction = new Direction(0, 0);
   private int speed = GamePanel.getSpeedFactor(2);
 
@@ -23,8 +19,6 @@ public class Star {
   private void randomStar() {
     x = (int) (Math.random() * GamePanel.screenSize.getWidth()) ;
     y = (int) (Math.random() * GamePanel.screenSize.getHeight());
-    start_x = x;
-    start_y = y;
     size_width = (int) (Math.random() * 4);
     size_height = (int) (Math.random() * 4);
     speed = speed + (int)(Math.random() * speed / 3);

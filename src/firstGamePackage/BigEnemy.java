@@ -1,16 +1,12 @@
 package firstGamePackage;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
-
-public class BigEnemy extends Enemy implements ActionListener{
+public class BigEnemy extends Enemy {
 
   private static AbstrGameObject target;
-  private Timer fireLaserTimer;
-  
-  public BigEnemy(){
+  private int last_fired;
+  private static int FIRE_INTERVALL = 2; // 2sec
+
+  public BigEnemy() {
     super();
     y = 50;
     x = 50;
@@ -19,43 +15,40 @@ public class BigEnemy extends Enemy implements ActionListener{
     image = PictureFactory.bigEnemy1_img;
     obj_image = image;
     target = GamePanel.ship;
-    speed = GamePanel.getSpeedFactor(1) ;
+    speed = GamePanel.getSpeedFactor(1);
     theta = 0;
     ROT_SPEED = 0d;
-    fireLaserTimer = new Timer(2000 , this);
-//    fireLaserTimer.start();
-  }
-  
-  protected void adjustDirectionToTarget() {
-    Direction dir = GraphicsTools.adjustDirectionToTarget( this , target);
-    theta = 0;
-    
-    if( dir != null ){
-      direction = dir;
-    }
-  }
-  
-  @Override 
-  protected void objectSpecificMove(AbstrGameObject obj){
-    adjustDirectionToTarget();
-    // stays NORTH!
-    if (y > GamePanel.y_max / 4){
-      y = GamePanel.y_max / 4;
-    }
-    GraphicsTools.checkBounds(this);
-    
-    if (Math.abs(GamePanel.ship.y - y) < 20)
-      fireBigGun();
   }
 
-  private void fireBigGun() {
-    for (int i = 0 ; i < 10 ; i++){
-      GamePanel.enemy_laser_array.add(new BigGunLaser(x,y , theta + i) );
+  protected void adjustDirectionToTarget() {
+    Direction dir = GraphicsTools.adjustDirectionToTarget(this, target);
+    theta = 0;
+
+    if (dir != null) {
+      direction = dir;
     }
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
+  protected void objectSpecificMove(AbstrGameObject obj) {
+    adjustDirectionToTarget();
+    // stays NORTH!
+    if (y > GamePanel.y_max / 4) {
+      y = GamePanel.y_max / 4;
+    }
+    GraphicsTools.checkBounds(this);
     fireBigGun();
+  }
+
+  private void fireBigGun() {
+
+    if (GamePanel.Animation_tick > last_fired
+        + GamePanel.getSpeedFactor(FIRE_INTERVALL)) {
+      last_fired = GamePanel.Animation_tick;
+
+      for (int i = 0; i < 10; i++) {
+        GamePanel.enemy_laser_array.add(new BigGunLaser(x, y, theta + i));
+      }
+    }
   }
 }
